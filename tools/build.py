@@ -302,6 +302,7 @@ def title_block(pm, link_pdf):
     return (f'<header class="tp"><p class="pmc">{esc(pm.get("code"))} · Issue {esc(pm.get("issue"))} · {esc(pm.get("date"))}</p>'
             f'<h1>{esc(pm.findtext("title"))}</h1><p class="lede">{esc(pm.findtext("subtitle"))}</p>'
             f'<p>Applies to {esc(pm.findtext("applic"))}. Prepared by {esc(pm.findtext("author"))}.</p>'
+            f'<p class="status"><strong>Status:</strong> {esc(pm.findtext("status"))}</p>'
             f'<div class="warning" role="note"><div class="nl">Warning</div><p>Downlink Desk is not flight software. '
             f'It cannot command a spacecraft and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</p></div>'
             f"{pdf}</header>")

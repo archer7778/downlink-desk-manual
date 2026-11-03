@@ -2,7 +2,7 @@
 
 **Read it: [archer7778.github.io/downlink-desk-manual](https://archer7778.github.io/downlink-desk-manual/)** (also as a PDF from that page)
 
-An operator's manual for [Downlink Desk](https://github.com/archer7778/downlink-desk), a ground-segment console that watches real satellites through the SatNOGS network. It is written as structured documentation, following the principles of S1000D, the international specification for technical publications used in defence and aerospace: the content lives in XML data modules, each with its own code, type, issue and date, and is assembled by a publication module into a website and a printable PDF.
+A demonstration operator's manual for [Downlink Desk](https://github.com/archer7778/downlink-desk), an open-source hobby console that watches real satellites through the SatNOGS network. It's a portfolio piece showing structured technical documentation, not an approved procedure for any real operation. The [public demo console](https://archer7778.github.io/downlink-desk/) is read-only, so procedures that sign actions need your own installation. It is written as structured documentation, following the principles of S1000D, the international specification for technical publications used in defence and aerospace: the content lives in XML data modules, each with its own code, type, issue and date, and is assembled by a publication module into a website and a printable PDF.
 
 ## What's in it
 

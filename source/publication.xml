@@ -5,6 +5,7 @@
   <subtitle>Operating procedures and fault isolation for the Downlink Desk ground-segment console</subtitle>
   <applic>Downlink Desk 0.17.x</applic>
   <author>Archie Maclean</author>
+  <status>Demonstration publication. An example of structured technical documentation for an open-source hobby console; not an approved procedure for any real operation.</status>
   <entry title="Front matter">
     <dmRef target="DMC-DLD-A-00-00-00-00A-018A-A"/>
     <dmRef target="DMC-DLD-A-00-00-00-00A-012A-A"/>

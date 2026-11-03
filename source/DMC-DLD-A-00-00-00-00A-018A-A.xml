@@ -8,6 +8,16 @@
       <para>This manual tells operators how to run Downlink Desk, a ground-segment operations console for satellites tracked through the SatNOGS network. It covers starting a shift, responding to alerts, changing limits, handing over, checking the audit trail and isolating common faults.</para>
     </levelledPara>
     <levelledPara>
+      <title>About this publication</title>
+      <para>This is a demonstration manual. It was written to show how structured technical documentation works, using Downlink Desk, an open-source hobby console, as its subject. Downlink Desk watches real satellites, but it is not used by any mission team, and this manual is not an approved procedure for any real operation.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>Using this manual with the public demo</title>
+      <para>The public demo at archer7778.github.io/downlink-desk shows real telemetry, but it is a read-only snapshot rebuilt about every 6 hours. You can follow the descriptive modules and look at every screen the procedures name. Steps that sign an action, such as acknowledging or shelving an alert, completing the daily check, changing limits or signing a handover, show the message "This is a read-only demo" instead.</para>
+      <para>To carry out the procedures in full, install Downlink Desk on your own computer. Fault isolation steps marked "on the server" also need your own installation.</para>
+      <note><notePara>The demo also has a training simulator at archer7778.github.io/downlink-desk/training, where you can inject faults and practise responding to them. Its screens differ from the console, and this manual does not cover it.</notePara></note>
+    </levelledPara>
+    <levelledPara>
       <title>Who this manual is for</title>
       <para>Operators who watch one or more satellites on a running Downlink Desk console. You do not need to know how the software works inside. For installation, see the setup guide in the Downlink Desk repository.</para>
     </levelledPara>
