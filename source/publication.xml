@@ -10,21 +10,22 @@
     <dmRef target="DMC-DLD-A-00-00-00-00A-018A-A"/>
     <dmRef target="DMC-DLD-A-00-00-00-00A-012A-A"/>
     <dmRef target="DMC-DLD-A-00-00-00-00A-005A-A"/>
+    <dmRef target="DMC-DLD-A-00-00-00-00A-006A-A"/>
   </entry>
   <entry title="Description">
-    <dmRef target="DMC-DLD-A-10-00-00-00A-040A-A"/>
+    <dmRef target="DMC-DLD-A-00-00-00-00A-040A-A"/>
     <dmRef target="DMC-DLD-A-20-00-00-00A-040A-A"/>
   </entry>
   <entry title="Operating procedures">
     <dmRef target="DMC-DLD-A-30-10-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-20-10-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-20-20-00-00A-130A-A"/>
     <dmRef target="DMC-DLD-A-30-20-00-00A-130A-A"/>
-    <dmRef target="DMC-DLD-A-30-30-00-00A-130A-A"/>
-    <dmRef target="DMC-DLD-A-30-40-00-00A-130A-A"/>
-    <dmRef target="DMC-DLD-A-40-00-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-30-30-00-00A-300A-A"/>
   </entry>
   <entry title="Fault isolation">
-    <dmRef target="DMC-DLD-A-50-10-00-00A-420A-A"/>
-    <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>
-    <dmRef target="DMC-DLD-A-50-30-00-00A-420A-A"/>
+    <dmRef target="DMC-DLD-A-10-20-00-00A-400A-A"/>
+    <dmRef target="DMC-DLD-A-10-10-00-00A-400A-A"/>
+    <dmRef target="DMC-DLD-A-30-00-00-00A-400A-A"/>
   </entry>
 </pm>

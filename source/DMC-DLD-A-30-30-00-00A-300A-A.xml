@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-40-00-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
-  <title>Verify the audit trail</title>
+<dmodule code="DMC-DLD-A-30-30-00-00A-300A-A" type="proced" issue="001" date="2026-11-03">
+  <dmTitle><techName>Audit trail</techName><infoName>Verify the chain</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <preliminaryRqmts>
       <reqCondGroup>
         <reqCond>You can reach the console.</reqCond>
       </reqCondGroup>
-      <reqTime>About 2 minutes.</reqTime>
+      <reqPersons><person count="1">Operator</person><estimatedTime>About 2 minutes.</estimatedTime></reqPersons>
+      <reqSupportEquips><supportEquipDescr>A computer or phone with a web browser, on the same network as the server</supportEquipDescr></reqSupportEquips>
+      <reqSupplies><noSupplies/></reqSupplies>
+      <reqSpares><noSpares/></reqSpares>
       <reqSafety>
         <caution><warningAndCautionPara>A successful check shows that the record has not been edited through normal means. It does not prove that nobody with access to the server's files rebuilt the whole chain.</warningAndCautionPara></caution>
       </reqSafety>
@@ -27,7 +31,7 @@
           <row><entry>Problems found: content changed after signing</entry><entry>An entry was edited after it was written.</entry><entry>Go to step 4.</entry></row>
           <row><entry>Problems found: does not link to the entry before it</entry><entry>The chain has been broken or rebuilt.</entry><entry>Go to step 4.</entry></row>
           <row><entry>Problems found: entries missing</entry><entry>One or more entries were deleted.</entry><entry>Go to step 4.</entry></row>
-          <row><entry>Could not verify</entry><entry>The console could not reach the server.</entry><entry>Refer to <dmRef target="DMC-DLD-A-50-30-00-00A-420A-A"/>.</entry></row>
+          <row><entry>Could not verify</entry><entry>The console could not reach the server.</entry><entry>Refer to <dmRef target="DMC-DLD-A-30-00-00-00A-400A-A"/>.</entry></row>
         </table>
       </proceduralStep>
       <proceduralStep id="s4">
@@ -35,7 +39,7 @@
       </proceduralStep>
     </mainProcedure>
     <closeRqmts>
-      <reqCond>The chain is intact, or a problem has been reported.</reqCond>
+      <reqCondGroup><reqCond>The chain is intact, or a problem has been reported.</reqCond></reqCondGroup>
     </closeRqmts>
   </content>
 </dmodule>

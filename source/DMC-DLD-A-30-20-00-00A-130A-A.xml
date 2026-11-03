@@ -1,61 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmodule code="DMC-DLD-A-30-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
-  <title>Respond to an alert</title>
+  <dmTitle><techName>Shift handover</techName><infoName>Hand over the console</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <preliminaryRqmts>
       <reqCondGroup>
         <reqCond>You are on duty, with your call sign entered.</reqCond>
-        <reqCond>The alert is shown in the <ui>Alerts</ui> panel on the <ui>Console</ui> tab.</reqCond>
+        <reqCond>You know the call sign of the incoming operator.</reqCond>
       </reqCondGroup>
-      <reqTime>5 to 20 minutes for each alert.</reqTime>
+      <reqPersons><person count="1">Operator</person><estimatedTime>About 10 minutes.</estimatedTime></reqPersons>
+      <reqSupportEquips><supportEquipDescr>A computer or phone with a web browser, on the same network as the server</supportEquipDescr></reqSupportEquips>
+      <reqSupplies><noSupplies/></reqSupplies>
+      <reqSpares><noSpares/></reqSpares>
       <reqSafety>
-        <warning><warningAndCautionPara>The values on screen are the latest received, not the spacecraft's state now. Check the time of the reading before you act.</warningAndCautionPara></warning>
-        <warning><warningAndCautionPara>A shelved alert is hidden from the main list. Give a reason the next operator can act on, and shelve for the shortest time that makes sense.</warningAndCautionPara></warning>
+        <caution><warningAndCautionPara>The report shows the console as it is when you sign. Acknowledge or deal with alerts first, so the incoming operator does not inherit work you could have finished.</warningAndCautionPara></caution>
       </reqSafety>
     </preliminaryRqmts>
     <mainProcedure>
       <proceduralStep id="s1">
-        <para>Read the alert. Note its severity (<ui>Alarm</ui>, <ui>Caution</ui> or <ui>Event</ui>), the channel or condition, and when it was raised.</para>
+        <para>On the <ui>Console</ui> tab, acknowledge every open alert you have seen. Refer to <dmRef target="DMC-DLD-A-20-10-00-00A-130A-A"/>.</para>
       </proceduralStep>
       <proceduralStep id="s2">
-        <para>Select <ui>Acknowledge</ui> on the alert.</para>
-        <para>Check that the alert now shows <ui>Acked</ui> with your call sign.</para>
-        <note><notePara>Acknowledging records that you have seen the alert. It does not clear it. The alert closes by itself once its condition clears.</notePara></note>
+        <para>Select the <ui>Shift handover</ui> tab. Read the <ui>Handover report</ui>. Check that it matches what you know of the shift.</para>
       </proceduralStep>
       <proceduralStep id="s3">
-        <para>Find the cause.</para>
-        <proceduralStep id="s3-1">
-          <para>For a limit alert, select the channel name in the alert. Look at the last 7 days of the channel on the chart.</para>
-          <randomList>
-            <listItem><para>Grey bands show eclipse. A temperature that drops in each eclipse and recovers in sunlight is normal.</para></listItem>
-            <listItem><para>Red ticks along the top show geomagnetic storms. Check whether the reading lines up with one.</para></listItem>
-            <listItem><para>Coloured bands show the caution and alarm zones.</para></listItem>
-          </randomList>
-        </proceduralStep>
-        <proceduralStep id="s3-2">
-          <para>For an alert that no new frames have arrived, or that the satellite may have gone silent, refer to <dmRef target="DMC-DLD-A-50-10-00-00A-420A-A"/>.</para>
-        </proceduralStep>
-        <proceduralStep id="s3-3">
-          <para>For an alert that the server cannot reach SatNOGS or that the API key was rejected, refer to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</para>
-        </proceduralStep>
+        <para>In <ui>Notes for the next operator</ui>, write what the incoming operator needs to know. Include:</para>
+        <randomList>
+          <listItem><para>anything you are still investigating;</para></listItem>
+          <listItem><para>any alert you shelved, and why;</para></listItem>
+          <listItem><para>anything to check at a set time, such as a pass or a limit review.</para></listItem>
+        </randomList>
+        <note><notePara>Notes are shared and saved as you type.</notePara></note>
       </proceduralStep>
       <proceduralStep id="s4">
-        <para>Record what you found. Type a short note in the log note box on the <ui>Console</ui> tab and select <ui>Log note</ui>.</para>
+        <para>Type the incoming operator's call sign in <ui>Incoming operator</ui>.</para>
       </proceduralStep>
       <proceduralStep id="s5">
-        <para>If the alert is expected and you need it out of the main list for a while, shelve it:</para>
-        <proceduralStep id="s5-1"><para>Select <ui>Shelve</ui> on the alert.</para></proceduralStep>
-        <proceduralStep id="s5-2"><para>Choose how long: 1 hour, 6 hours, 1 day or 1 week.</para></proceduralStep>
-        <proceduralStep id="s5-3"><para>Type a reason the next operator can act on, for example: "Battery temperature low in each eclipse since season change; within mission behaviour. Review limits Friday."</para></proceduralStep>
-        <proceduralStep id="s5-4"><para>Select the second <ui>Shelve</ui> button, next to the reason. Check that the alert now appears under <ui>Shelved</ui>.</para></proceduralStep>
+        <para>If the team keeps handover reports elsewhere, select <ui>Copy</ui> and paste the report where it is needed.</para>
+        <note><notePara>Do this before you sign. Signing clears the notes field.</notePara></note>
       </proceduralStep>
       <proceduralStep id="s6">
-        <para>If a limit is wrong rather than the value, change the limit. Refer to <dmRef target="DMC-DLD-A-30-30-00-00A-130A-A"/>.</para>
+        <para>Select <ui>Sign handover</ui>.</para>
+        <para>Check that the message confirms the incoming operator is on duty.</para>
+        <note><notePara>Signing writes a fingerprint of the report, your notes, both call signs and the number of unacknowledged alerts to the audit trail.</notePara></note>
       </proceduralStep>
     </mainProcedure>
     <closeRqmts>
-      <reqCond>The alert is acknowledged, the cause is noted in the log, and the alert is either closed, open with a known cause, or shelved with a reason.</reqCond>
+      <reqCondGroup><reqCond>The incoming operator is shown as on duty, and the handover is signed in the audit trail.</reqCond></reqCondGroup>
     </closeRqmts>
   </content>
 </dmodule>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmodule code="DMC-DLD-A-00-00-00-00A-005A-A" type="descript" issue="001" date="2026-11-03">
-  <title>Abbreviations and terms</title>
+  <dmTitle><techName>Downlink Desk</techName><infoName>List of abbreviations</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <levelledPara>
@@ -12,26 +13,6 @@
         <row><entry>SatNOGS</entry><entry>Satellite Networked Open Ground Station, a network of volunteer ground stations</entry></row>
         <row><entry>SSH</entry><entry>Secure Shell, used to log in to the server from another computer</entry></row>
         <row><entry>TLE</entry><entry>Two-line element set, the standard format for a satellite's orbit</entry></row>
-      </table>
-    </levelledPara>
-    <levelledPara>
-      <title>Terms</title>
-      <table>
-        <row head="yes"><entry>Term</entry><entry>Meaning in this manual</entry></row>
-        <row><entry>Acknowledge</entry><entry>Record that an operator has seen an alert. The alert stays in the list until its condition clears.</entry></row>
-        <row><entry>Alarm</entry><entry>The higher alert severity. A value is outside its alarm limits, or a condition needs attention now.</entry></row>
-        <row><entry>Audit trail</entry><entry>The signed record of every operator action. Each entry carries a fingerprint (hash) of the one before it.</entry></row>
-        <row><entry>Call sign</entry><entry>The short identifier, usually initials, that signs every action you take.</entry></row>
-        <row><entry>Caution</entry><entry>The lower alert severity. A value is outside its caution limits, or a condition may need attention.</entry></row>
-        <row><entry>Channel</entry><entry>One telemetry value, such as a battery voltage or temperature.</entry></row>
-        <row><entry>Drift</entry><entry>A channel moving away from its learned normal for the same point in the orbit, even while inside its limits.</entry></row>
-        <row><entry>Eclipse</entry><entry>The part of each orbit in Earth's shadow.</entry></row>
-        <row><entry>Event</entry><entry>An alert about something that happened once, such as a restart, rather than a condition that continues.</entry></row>
-        <row><entry>Fetch</entry><entry>One run of the job that collects new frames from SatNOGS, every 30 minutes by default.</entry></row>
-        <row><entry>Frame</entry><entry>One packet of telemetry received by a ground station.</entry></row>
-        <row><entry>Handover</entry><entry>The signed transfer of the console from one operator to the next.</entry></row>
-        <row><entry>Shelve</entry><entry>Hide an alert for a set time, with a reason. Shelving is signed in the audit trail.</entry></row>
-        <row><entry>Stale</entry><entry>No new decoded frames for longer than the stale period, 12 hours by default.</entry></row>
       </table>
     </levelledPara>
   </content>

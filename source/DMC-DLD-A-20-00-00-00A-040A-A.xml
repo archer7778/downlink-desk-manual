@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmodule code="DMC-DLD-A-20-00-00-00A-040A-A" type="descript" issue="001" date="2026-11-03">
-  <title>Alert system description</title>
+  <dmTitle><techName>Alert system</techName><infoName>Description</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <levelledPara>

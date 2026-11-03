@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmodule code="DMC-DLD-A-00-00-00-00A-012A-A" type="descript" issue="001" date="2026-11-03">
-  <title>Warnings and cautions</title>
+  <dmTitle><techName>Downlink Desk</techName><infoName>Safety statements</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <levelledPara>
       <title>Warnings</title>
-      <para>These warnings apply throughout the manual. Read them before you operate the console.</para>
-      <warning>
-        <warningAndCautionPara>Downlink Desk cannot command a spacecraft and is not the mission team's own system. Do not use its alerts or limits to make decisions about real spacecraft hardware.</warningAndCautionPara>
-      </warning>
-      <warning>
-        <warningAndCautionPara>Telemetry arrives minutes to hours after a pass, and only when a volunteer station heard the satellite. A value on screen is the latest one received, not the spacecraft's state now. Check the time of the reading before you act on it.</warningAndCautionPara>
-      </warning>
-      <warning>
-        <warningAndCautionPara>A shelved alert does not appear in the main alert list until the shelf expires. Always give a reason that the next operator can act on, and shelve for the shortest time that makes sense.</warningAndCautionPara>
-      </warning>
+      <para>None. Downlink Desk runs on an ordinary computer and only receives data, so no task in this manual can cause injury or death.</para>
     </levelledPara>
     <levelledPara>
       <title>Cautions</title>
+      <para>These cautions apply throughout the manual. Read them before you operate the console.</para>
       <caution>
-        <warningAndCautionPara>Every action is signed with the call sign entered at the top of the console. Enter your own call sign before you acknowledge, shelve, change limits or sign a handover, or the record will name the wrong person.</warningAndCautionPara>
+        <warningAndCautionPara>Do not use Downlink Desk alerts or limits to make decisions about real spacecraft hardware. Downlink Desk cannot command a spacecraft, it is not the mission team's own system, and its limits are provisional.</warningAndCautionPara>
       </caution>
       <caution>
-        <warningAndCautionPara>Limits suggested from data are based on the satellite's own recent history. If that history already contains a fault, the suggested limits will hide it. Review suggested limits before you save them.</warningAndCautionPara>
+        <warningAndCautionPara>Check the time of a reading before you act on it. Telemetry arrives minutes to hours after a pass, so a value on screen is the latest one received, not the spacecraft's state now.</warningAndCautionPara>
       </caution>
       <caution>
-        <warningAndCautionPara>The audit trail is tamper-evident, not tamper-proof. Someone with access to the server's files could rebuild the chain. Control who can log in to the server.</warningAndCautionPara>
+        <warningAndCautionPara>Enter your own call sign before you acknowledge, shelve, change limits or sign a handover. Every action is signed with the call sign at the top of the console, and an incorrect call sign makes the record name the wrong person.</warningAndCautionPara>
       </caution>
+      <caution>
+        <warningAndCautionPara>Review limits suggested from data before you save them. They come from the satellite's own recent history, so if that history already contains a fault, the suggested limits will hide it.</warningAndCautionPara>
+      </caution>
+    </levelledPara>
+    <levelledPara>
+      <title>Notes</title>
+      <note>
+        <notePara>A shelved alert does not appear in the main alert list until the shelf expires. Always give a reason the next operator can act on, and shelve for the shortest time that makes sense.</notePara>
+      </note>
+      <note>
+        <notePara>The audit trail is tamper-evident, not tamper-proof. Someone with access to the server's files could rebuild the chain.</notePara>
+      </note>
     </levelledPara>
   </content>
 </dmodule>

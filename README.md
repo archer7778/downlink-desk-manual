@@ -2,18 +2,20 @@
 
 **Read it: [archer7778.github.io/downlink-desk-manual](https://archer7778.github.io/downlink-desk-manual/)** (also as a PDF from that page)
 
-A demonstration operator's manual for [Downlink Desk](https://github.com/archer7778/downlink-desk), an open-source hobby console that watches real satellites through the SatNOGS network. It's a portfolio piece showing structured technical documentation, not an approved procedure for any real operation. The [public demo console](https://archer7778.github.io/downlink-desk/) is read-only, so procedures that sign actions need your own installation. It is written as structured documentation, following the principles of S1000D, the international specification for technical publications used in defence and aerospace: the content lives in XML data modules, each with its own code, type, issue and date, and is assembled by a publication module into a website and a printable PDF.
+A demonstration operator's manual for [Downlink Desk](https://github.com/archer7778/downlink-desk), an open-source hobby console that watches real satellites through the SatNOGS network. It's a portfolio piece showing structured technical documentation, not an approved procedure for any real operation. The [public demo console](https://archer7778.github.io/downlink-desk/) is read-only, so procedures that sign actions need your own installation.
+
+The manual follows the conventions of S1000D, the international specification for technical publications used in defence and aerospace. The content lives in XML data modules, each with its own code, title, issue, date and status. A publication module assembles them into a website and a printable PDF.
 
 ## What's in it
 
-| Part | Data modules |
+| Part | Data modules (technical name – information name) |
 |---|---|
-| Front matter | Introduction · Warnings and cautions · Abbreviations and terms |
-| Description | System description (with a data-flow figure) · Alert system |
-| Operating procedures | Start a shift and complete the daily check · Respond to an alert · Set or change channel limits · Hand over the console · Verify the audit trail |
-| Fault isolation | No frames, or satellite may have gone silent · Server cannot collect data from SatNOGS · Console does not open |
+| Front matter | Downlink Desk – Introduction · Safety statements · List of abbreviations · List of terms |
+| Description | Downlink Desk – Description (with a data-flow figure) · Alert system – Description |
+| Operating procedures | Shift start · Alerts · Channel limits · Shift handover · Audit trail |
+| Fault isolation | Telemetry reception · SatNOGS link · Web console |
 
-Procedures carry preliminary requirements (conditions, time, safety), numbered steps and close-out conditions. Fault isolation modules are yes/no decision trees that end in a result with an action. Warnings, cautions and notes follow the conventional hierarchy.
+Procedural and fault isolation modules carry the full set of preliminary requirements (conditions, persons and time, support equipment, supplies, spares, safety; "None" where nothing is needed), then numbered steps or yes/no isolation steps, then close-out conditions.
 
 ## How it's built
 
@@ -23,16 +25,37 @@ source/
   DMC-*.xml                one file per data module
   graphics/                figures (SVG)
 tools/
-  build.py                 checks the source, then writes site/ (standard library only)
+  build.py                 checks the source against the project's rules, then writes site/
   manual.css               screen and print styles
 .github/workflows/publish.yml   builds, prints the PDF and publishes to GitHub Pages on every push
 ```
 
-`python3 tools/build.py` refuses to build if anything is wrong: an element outside the profile, a data module code that doesn't match its file name, a reference to a module that doesn't exist, a figure without alt text, or a fault-isolation answer that leads nowhere or a result that can never be reached. Pull requests run the same checks.
+`python3 tools/build.py` works like a set of business rules (the role S1000D gives to a BREX data module). It refuses to build if:
 
-## About the S1000D approach
+- an element is outside the profile, or a module is missing its title, status or applicability;
+- a data module code doesn't match its file name, or its information code doesn't fit its type (fault isolation needs 4xx);
+- a procedure or fault isolation module is missing any of the preliminary requirements or the close-out conditions;
+- a `<warning>` appears. In S1000D a warning means a risk of injury or death; nothing in this product can cause either, so the project allows cautions and notes only;
+- a reference, figure or alt text is missing, or a fault isolation answer leads nowhere or a result can never be reached.
 
-Data module codes follow the S1000D pattern (model identifier, system and sub-system, disassembly code, information code). Element names such as `levelledPara`, `proceduralStep`, `preliminaryRqmts` and `isolationStep` follow S1000D's, in a simplified profile. The XML is **not** validated against the official S1000D schemas, and the information codes (018 introduction, 012 warnings and cautions, 005 abbreviations, 040 description, 130 operating procedure, 420 fault isolation) are this manual's own, chosen to resemble S1000D usage. It demonstrates the method, not certified compliance.
+Pull requests run the same checks.
+
+## How closely it follows S1000D
+
+**Follows:**
+- Data module codes (model identification, system difference, system and subsystem, assembly, disassembly code and variant, information code and variant, item location). The numbering system is defined in the Introduction.
+- Information codes as used in the S1000D sample publications: 005 list of abbreviations, 006 list of terms, 012 safety statements, 018 introduction, 040 description, 130 normal operation, 300 examinations, tests and checks, 400 fault reports and isolation procedures.
+- Titles as technical name plus information name; S1000D's definitions of warning, caution and note; element names such as `levelledPara`, `proceduralStep`, `preliminaryRqmts`, `isolationStep` and `yesNoAnswer`.
+- Status per module: security classification, responsible partner company, originator and quality assurance. Every module is marked **Unverified**: checked against the Downlink Desk source code, not yet carried out on a running console.
+
+**Simplified:**
+- The XML is a reduced profile and is **not** validated against the official S1000D schemas. Identification and status are shortened attributes, not the full `identAndStatusSection`.
+- File names leave out the issue number and language suffix.
+- The title page, table of contents and list of effective data modules are generated by the build, not written as data modules (001, 009, 00S).
+- There is no separate BREX data module; the build script enforces the rules above.
+- The text is plain English, not ASD-STE100 Simplified Technical English.
+
+It demonstrates the method, not certified compliance.
 
 ## How it was made
 
@@ -40,4 +63,4 @@ I specified the manual's scope, structure and conventions. Claude (Anthropic) dr
 
 ## Licence
 
-Text and figures: CC BY 4.0. Build scripts: MIT.
+Text and figures: CC BY 4.0. Build scripts: MIT. See [LICENSE](LICENSE).

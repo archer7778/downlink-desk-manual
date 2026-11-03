@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmodule code="DMC-DLD-A-00-00-00-00A-018A-A" type="descript" issue="001" date="2026-11-03">
-  <title>Introduction</title>
+  <dmTitle><techName>Downlink Desk</techName><infoName>Introduction</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <levelledPara>
@@ -27,26 +28,51 @@
     </levelledPara>
     <levelledPara>
       <title>How the manual is organised</title>
-      <para>The manual is made of data modules. Each data module covers one topic and has its own code, issue number and date. There are three types:</para>
+      <para>The manual is made of data modules. Each data module covers one topic and has its own code, issue number, date and status. There are three types:</para>
       <randomList>
         <listItem><para><emphasis>Descriptive</emphasis> modules explain what the system is and how it behaves.</para></listItem>
-        <listItem><para><emphasis>Procedural</emphasis> modules give numbered steps for a task, with the conditions you need before you start.</para></listItem>
+        <listItem><para><emphasis>Procedural</emphasis> modules give numbered steps for a task, with the requirements you need before you start and the conditions when you finish.</para></listItem>
         <listItem><para><emphasis>Fault isolation</emphasis> modules take you from a symptom to its cause through yes/no questions.</para></listItem>
       </randomList>
+    </levelledPara>
+    <levelledPara>
+      <title>Data module codes</title>
+      <para>Each data module code follows the S1000D pattern. For example, DMC-DLD-A-20-10-00-00A-130A-A is read as:</para>
+      <table>
+        <row head="yes"><entry>Part</entry><entry>Value</entry><entry>Meaning</entry></row>
+        <row><entry>Model identification code</entry><entry>DLD</entry><entry>Downlink Desk</entry></row>
+        <row><entry>System difference code</entry><entry>A</entry><entry>The standard installation</entry></row>
+        <row><entry>System, subsystem and sub-subsystem</entry><entry>20-10</entry><entry>Alert system, alerts (see the numbering table below)</entry></row>
+        <row><entry>Assembly</entry><entry>00</entry><entry>Not broken down further</entry></row>
+        <row><entry>Disassembly code and variant</entry><entry>00A</entry><entry>Not broken down further; first variant</entry></row>
+        <row><entry>Information code and variant</entry><entry>130A</entry><entry>Normal operation; first variant</entry></row>
+        <row><entry>Item location code</entry><entry>A</entry><entry>Information about the item as installed</entry></row>
+      </table>
+      <para>The system numbering used in this manual:</para>
+      <table>
+        <row head="yes"><entry>Number</entry><entry>System</entry></row>
+        <row><entry>00</entry><entry>Downlink Desk as a whole</entry></row>
+        <row><entry>10</entry><entry>Data collection: 10-10 SatNOGS link, 10-20 telemetry reception</entry></row>
+        <row><entry>20</entry><entry>Alert system: 20-10 alerts, 20-20 channel limits</entry></row>
+        <row><entry>30</entry><entry>Operator console: 30-00 web console, 30-10 shift start, 30-20 shift handover, 30-30 audit trail</entry></row>
+      </table>
+      <para>The information codes used are 005 (list of abbreviations), 006 (list of terms), 012 (safety statements), 018 (introduction), 040 (description), 130 (normal operation), 300 (examinations, tests and checks) and 400 (fault reports and isolation procedures).</para>
     </levelledPara>
     <levelledPara>
       <title>Conventions</title>
       <randomList>
         <listItem><para>Names of buttons, tabs and fields on screen are shown like this: <ui>Acknowledge</ui>.</para></listItem>
         <listItem><para>Commands you type on the server are shown like this: <cmd>sudo systemctl restart downlink-desk-web</cmd>. They assume Downlink Desk is installed in <cmd>~/downlink-desk</cmd>, as in the setup guide.</para></listItem>
-        <listItem><para>A <emphasis>warning</emphasis> tells you about a risk of a wrong operational decision or loss of data. A <emphasis>caution</emphasis> tells you about a risk of a wrong record or wasted effort. A <emphasis>note</emphasis> gives useful information.</para></listItem>
+        <listItem><para>Safety statements follow S1000D. A <emphasis>warning</emphasis> tells you about a risk of injury or death; this manual has none. A <emphasis>caution</emphasis> tells you about a risk of damage to equipment or data, or of an incorrect record. A <emphasis>note</emphasis> gives useful information.</para></listItem>
+        <listItem><para>The console also uses <ui>Caution</ui> and <ui>Alarm</ui> as the names of its two alert severities. These are shown as screen text, and are not safety statements.</para></listItem>
+        <listItem><para>Each data module shows its quality assurance status. <emphasis>Unverified</emphasis> means the procedure has been checked against the Downlink Desk source code but has not yet been carried out on a running console.</para></listItem>
       </randomList>
     </levelledPara>
     <levelledPara>
       <title>Status of the system</title>
-      <warning>
+      <caution>
         <warningAndCautionPara>Downlink Desk is not flight software. It cannot command a spacecraft, it is not affiliated with any satellite team, and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</warningAndCautionPara>
-      </warning>
+      </caution>
     </levelledPara>
   </content>
 </dmodule>

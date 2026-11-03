@@ -21,14 +21,25 @@ OUT = ROOT / "site"
 PDF_NAME = "downlink-desk-operators-manual.pdf"
 
 TYPES = {"descript": "Descriptive", "proced": "Procedural", "fault": "Fault isolation"}
+QA = {"unverified": "Unverified", "tabletop": "First verification: table-top", "onObject": "First verification: on object"}
+# Business rule: a warning means a risk of injury or death (S1000D). Nothing in this product can
+# cause either, so the project allows cautions and notes only. A warning in the source fails the build.
+FORBIDDEN = {"warning": "warnings are for risk of injury or death; use <caution> or <note>"}
+
+
+def title_of(root):
+    """S1000D data module title: technical name - information name."""
+    return root.findtext("dmTitle/techName", "") + " – " + root.findtext("dmTitle/infoName", "")
 # Every element the profile allows. Anything else is a build error, so typos can't slip through.
 ALLOWED = {
-    "dmodule", "title", "applic", "content", "levelledPara", "para", "randomList", "listItem",
+    "dmodule", "dmTitle", "techName", "infoName", "status", "title", "applic", "content", "levelledPara", "para", "randomList", "listItem",
     "emphasis", "ui", "cmd", "note", "notePara", "warning", "caution", "warningAndCautionPara",
     "table", "row", "entry", "figure", "graphic", "dmRef", "preliminaryRqmts", "reqCondGroup",
-    "reqCond", "reqTime", "reqSafety", "mainProcedure", "proceduralStep", "closeRqmts",
-    "faultIsolation", "faultDescr", "isolationStep", "action", "isolationStepQuestion",
-    "yesAnswer", "noAnswer", "isolationProcedureEnd",
+    "reqCond", "reqPersons", "person", "estimatedTime", "reqSupportEquips", "supportEquipDescr",
+    "noSupportEquips", "reqSupplies", "noSupplies", "reqSpares", "noSpares", "reqSafety", "noSafety",
+    "mainProcedure", "proceduralStep", "closeRqmts", "faultIsolation", "faultDescr",
+    "isolationMainProcedure", "isolationStep", "action", "isolationStepQuestion",
+    "isolationStepAnswer", "yesNoAnswer", "yesAnswer", "noAnswer", "isolationProcedureEnd",
 }
 
 errors = []
@@ -62,10 +73,37 @@ def load():
                 err(f.name, f"missing attribute '{a}'")
         if root.get("type") not in TYPES:
             err(f.name, f"type must be one of {', '.join(TYPES)}")
-        if root.find("title") is None or not (root.findtext("title") or "").strip():
-            err(f.name, "missing title")
+        if not (root.findtext("dmTitle/techName") or "").strip() or not (root.findtext("dmTitle/infoName") or "").strip():
+            err(f.name, "dmTitle needs a techName and an infoName")
+        st = root.find("status")
+        if st is None:
+            err(f.name, "missing <status>")
+        else:
+            for a in ("security", "rpc", "originator", "qa"):
+                if not st.get(a):
+                    err(f.name, f"<status> missing '{a}'")
+            if st.get("qa") not in QA:
+                err(f.name, f"qa must be one of {', '.join(QA)}")
+        info = code.split("-")[-2][:3] if code else ""
+        kind = root.get("type")
+        if kind == "fault" and not info.startswith("4"):
+            err(f.name, "fault isolation modules need a 4xx information code")
+        if kind == "proced" and info[:1] not in "123456789":
+            err(f.name, "procedural modules need a procedural information code (100 to 999)")
+        if kind in ("proced", "fault"):
+            pr = root.find(".//preliminaryRqmts")
+            if pr is None:
+                err(f.name, "missing <preliminaryRqmts>")
+            else:
+                for r in ("reqCondGroup", "reqPersons", "reqSupportEquips", "reqSupplies", "reqSpares", "reqSafety"):
+                    if pr.find(r) is None:
+                        err(f.name, f"<preliminaryRqmts> missing <{r}> (state none explicitly)")
+            if root.find(".//closeRqmts/reqCondGroup") is None:
+                err(f.name, "missing <closeRqmts><reqCondGroup>")
         for el in root.iter():
-            if el.tag not in ALLOWED:
+            if el.tag in FORBIDDEN:
+                err(f.name, f"<{el.tag}> not allowed: {FORBIDDEN[el.tag]}")
+            elif el.tag not in ALLOWED:
                 err(f.name, f"element <{el.tag}> is not in the profile")
         dms[code] = root
     for c in order:
@@ -95,7 +133,7 @@ def load():
             reached = set()
             for s in root.iter("isolationStep"):
                 for ans in ("yesAnswer", "noAnswer"):
-                    a = s.find(ans)
+                    a = s.find(f"isolationStepAnswer/yesNoAnswer/{ans}")
                     if a is None:
                         err(c, f"step {s.get('id')} has no <{ans}>")
                     elif a.get("nextActionRefId") not in targets:
@@ -135,7 +173,7 @@ class Renderer:
                 out.append(f"<code>{self.inline(ch)}</code>")
             elif t == "dmRef":
                 code = ch.get("target")
-                title = self.dms[code].findtext("title") if code in self.dms else code
+                title = title_of(self.dms[code]) if code in self.dms else code
                 out.append(f'<a class="dmref" href="{self.href(code)}">{esc(title)}</a> '
                            f'<span class="dmc">({esc(code)})</span>')
             else:
@@ -163,8 +201,6 @@ class Renderer:
             return "<ul>" + "".join(f"<li>{''.join(self.block(p) for p in li)}</li>" for li in el) + "</ul>"
         if t == "note":
             return self.notice(el, "note", "Note")
-        if t == "warning":
-            return self.notice(el, "warning", "Warning")
         if t == "caution":
             return self.notice(el, "caution", "Caution")
         if t == "table":
@@ -190,53 +226,62 @@ class Renderer:
             items.append(f'<li><span class="sn">{n}</span><div class="sb">{body}{sub}</div></li>')
         return f'<ol class="steps">{"".join(items)}</ol>'
 
-    def procedure(self, content):
-        pr, out = content.find("preliminaryRqmts"), []
-        if pr is not None:
-            out.append("<section><h3>Preliminary requirements</h3>")
-            conds = pr.find("reqCondGroup")
-            if conds is not None:
-                out.append("<h4>Required conditions</h4><ul>" +
-                           "".join(f"<li>{self.inline(c)}</li>" for c in conds) + "</ul>")
-            if pr.find("reqTime") is not None:
-                out.append(f'<h4>Estimated time</h4><p>{self.inline(pr.find("reqTime"))}</p>')
-            if pr.find("reqSafety") is not None:
-                out.append("<h4>Safety conditions</h4>" + "".join(self.block(c) for c in pr.find("reqSafety")))
-            out.append("</section>")
-        out.append(f'<section><h3>Procedure</h3>{self.steps(content.find("mainProcedure"))}</section>')
-        cr = content.find("closeRqmts")
-        if cr is not None:
-            out.append("<section><h3>Requirements after job completion</h3><ul>" +
-                       "".join(f"<li>{self.inline(c)}</li>" for c in cr) + "</ul></section>")
+    def prelim(self, pr):
+        """Preliminary requirements in the S1000D order, stating "None" where nothing is needed."""
+        def items(el, child):
+            got = el.findall(child) if el is not None else []
+            return "<ul>" + "".join(f"<li>{self.inline(c)}</li>" for c in got) + "</ul>" if got else "<p>None</p>"
+        out = ["<section><h3>Preliminary requirements</h3>"]
+        out.append("<h4>Required conditions</h4>" + items(pr.find("reqCondGroup"), "reqCond"))
+        rp = pr.find("reqPersons")
+        people = ", ".join(f'{p.get("count", "1")} × {esc(p.text)}' for p in rp.findall("person"))
+        out.append(f"<h4>Required persons</h4><p>{people}. Estimated time: {esc(rp.findtext('estimatedTime'))}</p>")
+        out.append("<h4>Support equipment</h4>" + items(pr.find("reqSupportEquips"), "supportEquipDescr"))
+        out.append("<h4>Supplies</h4><p>None</p><h4>Spares</h4><p>None</p>")
+        sf = pr.find("reqSafety")
+        safety = "".join(self.block(c) for c in sf if c.tag != "noSafety")
+        out.append("<h4>Safety conditions</h4>" + (safety or "<p>None</p>"))
+        out.append("</section>")
         return "".join(out)
+
+    def close(self, cr):
+        conds = cr.findall("reqCondGroup/reqCond")
+        return ("<section><h3>Requirements after job completion</h3><ul>" +
+                "".join(f"<li>{self.inline(c)}</li>" for c in conds) + "</ul></section>")
+
+    def procedure(self, content):
+        return (self.prelim(content.find("preliminaryRqmts")) +
+                f'<section><h3>Procedure</h3>{self.steps(content.find("mainProcedure"))}</section>' +
+                self.close(content.find("closeRqmts")))
 
     # fault isolation
     def fault(self, content):
         fi = content.find("faultIsolation")
-        steps = fi.findall("isolationStep")
-        ends = fi.findall("isolationProcedureEnd")
+        main = fi.find("isolationMainProcedure")
+        steps = main.findall("isolationStep")
+        ends = main.findall("isolationProcedureEnd")
         label = {s.get("id"): f"Step {i}" for i, s in enumerate(steps, 1)}
         label.update({e.get("id"): f"Result {chr(64 + i)}" for i, e in enumerate(ends, 1)})
-        anchor = lambda i: f"#{self.cur}-{i}"
 
-        def go(ans):
-            t = ans.get("nextActionRefId")
-            return f'<a href="{anchor(t)}">go to {label[t]}</a>'
+        def go(s, ans):
+            t = s.find(f"isolationStepAnswer/yesNoAnswer/{ans}").get("nextActionRefId")
+            return f'<a href="#{self.cur}-{t}">go to {label[t]}</a>'
 
         out = [f'<section><h3>Fault description</h3>{"".join(self.block(c) for c in fi.find("faultDescr"))}</section>',
-               "<section><h3>Isolation procedure</h3>"]
+               self.prelim(fi.find("preliminaryRqmts")), "<section><h3>Isolation procedure</h3>"]
         for s in steps:
             out.append(
                 f'<div class="istep" id="{self.cur}-{s.get("id")}"><div class="il">{label[s.get("id")]}</div>'
                 f'<p>{self.inline(s.find("action"))}</p>'
                 f'<p class="q">{self.inline(s.find("isolationStepQuestion"))}</p>'
-                f'<p class="ans"><span class="yes">Yes</span> {go(s.find("yesAnswer"))}'
-                f'<span class="no">No</span> {go(s.find("noAnswer"))}</p></div>')
+                f'<p class="ans"><span class="yes">Yes</span> {go(s, "yesAnswer")}'
+                f'<span class="no">No</span> {go(s, "noAnswer")}</p></div>')
         out.append("</section><section><h3>Results</h3>")
         for e in ends:
             out.append(f'<div class="iend" id="{self.cur}-{e.get("id")}"><div class="il">{label[e.get("id")]}</div>'
                        f'<p>{self.inline(e.find("action"))}</p></div>')
         out.append("</section>")
+        out.append(self.close(fi.find("closeRqmts")))
         return "".join(out)
 
     def dm(self, code):
@@ -250,10 +295,13 @@ class Renderer:
             body = self.fault(content)
         else:
             body = "".join(self.block(c) for c in content)
+        st = root.find("status")
         meta = (f'<div class="dmmeta"><span class="dmc">{esc(code)}</span>'
                 f'<span>{TYPES[t]}</span><span>Issue {esc(root.get("issue"))}</span>'
-                f'<span>{esc(root.get("date"))}</span><span>Applies to {esc(root.findtext("applic"))}</span></div>')
-        return f'<article class="dm" id="{esc(code)}">{meta}<h2>{esc(root.findtext("title"))}</h2>{body}</article>'
+                f'<span>{esc(root.get("date"))}</span><span>{esc(st.get("security"))}</span>'
+                f'<span class="qa">QA: {esc(QA[st.get("qa")])}</span>'
+                f'<span>Applies to {esc(root.findtext("applic"))}</span></div>')
+        return f'<article class="dm" id="{esc(code)}">{meta}<h2>{esc(title_of(root))}</h2>{body}</article>'
 
 
 # ---------------------------------------------------------------- pages
@@ -278,7 +326,7 @@ def page(title, body, css, extra_head=""):
 def lodm(pm, order, dms, single):
     href = (lambda c: f"#{c}") if single else (lambda c: f"dm/{c}.html")
     rows = "".join(
-        f'<tr><td><a href="{href(c)}">{esc(dms[c].findtext("title"))}</a></td><td class="dmc">{esc(c)}</td>'
+        f'<tr><td><a href="{href(c)}">{esc(title_of(dms[c]))}</a></td><td class="dmc">{esc(c)}</td>'
         f'<td>{TYPES[dms[c].get("type")]}</td><td>{esc(dms[c].get("issue"))}</td><td>{esc(dms[c].get("date"))}</td></tr>'
         for c in order)
     return ('<section class="lodm"><h2>List of effective data modules</h2><div class="tw"><table><thead><tr>'
@@ -291,7 +339,7 @@ def contents(groups, dms, single):
     out = ['<nav class="toc" aria-label="Contents"><h2>Contents</h2>']
     for title, codes in groups:
         out.append(f"<h3>{esc(title)}</h3><ol>")
-        out += [f'<li><a href="{href(c)}">{esc(dms[c].findtext("title"))}</a></li>' for c in codes]
+        out += [f'<li><a href="{href(c)}">{esc(title_of(dms[c]))}</a></li>' for c in codes]
         out.append("</ol>")
     out.append("</nav>")
     return "".join(out)
@@ -303,7 +351,7 @@ def title_block(pm, link_pdf):
             f'<h1>{esc(pm.findtext("title"))}</h1><p class="lede">{esc(pm.findtext("subtitle"))}</p>'
             f'<p>Applies to {esc(pm.findtext("applic"))}. Prepared by {esc(pm.findtext("author"))}.</p>'
             f'<p class="status"><strong>Status:</strong> {esc(pm.findtext("status"))}</p>'
-            f'<div class="warning" role="note"><div class="nl">Warning</div><p>Downlink Desk is not flight software. '
+            f'<div class="caution" role="note"><div class="nl">Caution</div><p>Downlink Desk is not flight software. '
             f'It cannot command a spacecraft and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</p></div>'
             f"{pdf}</header>")
 
@@ -331,11 +379,11 @@ def build(write=True):
     r = Renderer(dms, single=False)
     for i, c in enumerate(order):
         r.fig = 0
-        prev = f'<a href="{order[i-1]}.html">← {esc(dms[order[i-1]].findtext("title"))}</a>' if i else "<span></span>"
-        nxt = f'<a href="{order[i+1]}.html">{esc(dms[order[i+1]].findtext("title"))} →</a>' if i + 1 < len(order) else "<span></span>"
+        prev = f'<a href="{order[i-1]}.html">← {esc(title_of(dms[order[i-1]]))}</a>' if i else "<span></span>"
+        nxt = f'<a href="{order[i+1]}.html">{esc(title_of(dms[order[i+1]]))} →</a>' if i + 1 < len(order) else "<span></span>"
         body = (f'<main class="wrap"><p class="crumb"><a href="../index.html">{esc(pm.findtext("title"))}</a></p>'
                 f'{r.dm(c)}<nav class="pn">{prev}{nxt}</nav></main>')
-        (OUT / "dm" / f"{c}.html").write_text(page(f'{dms[c].findtext("title")} · {pm.findtext("title")}', body, "../manual.css"))
+        (OUT / "dm" / f"{c}.html").write_text(page(f'{title_of(dms[c])} · {pm.findtext("title")}', body, "../manual.css"))
 
     # single document for print
     r = Renderer(dms, single=True)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-50-20-00-00A-420A-A" type="fault" issue="001" date="2026-11-03">
-  <title>Fault isolation: the server cannot collect data from SatNOGS</title>
+<dmodule code="DMC-DLD-A-10-10-00-00A-400A-A" type="fault" issue="001" date="2026-11-03">
+  <dmTitle><techName>SatNOGS link</techName><infoName>Fault isolation: data is not being collected</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <faultIsolation>
@@ -14,41 +15,45 @@
         <para>You may also have received a phone alert that the last three fetches failed.</para>
         <note><notePara>Steps marked "on the server" need a terminal on the Downlink Desk server, for example over SSH. If you do not have access, report the alarm to whoever maintains the server.</notePara></note>
       </faultDescr>
+      <preliminaryRqmts>
+        <reqCondGroup><reqCond>An alert or symptom described above is present.</reqCond></reqCondGroup>
+        <reqPersons><person count="1">Operator</person><estimatedTime>10 to 30 minutes.</estimatedTime></reqPersons>
+        <reqSupportEquips><supportEquipDescr>A computer or phone with a web browser, on the same network as the server</supportEquipDescr><supportEquipDescr>Terminal access to the server, for example over SSH, for steps marked "on the server"</supportEquipDescr></reqSupportEquips>
+        <reqSupplies><noSupplies/></reqSupplies>
+        <reqSpares><noSpares/></reqSpares>
+        <reqSafety><noSafety/></reqSafety>
+      </preliminaryRqmts>
+      <isolationMainProcedure>
       <isolationStep id="q1">
         <action>Read the alarm message.</action>
         <isolationStepQuestion>Does it say there is no SatNOGS API key on the server?</isolationStepQuestion>
-        <yesAnswer nextActionRefId="e1"/>
-        <noAnswer nextActionRefId="q2"/>
+        <isolationStepAnswer><yesNoAnswer><yesAnswer nextActionRefId="e1"/><noAnswer nextActionRefId="q2"/></yesNoAnswer></isolationStepAnswer>
       </isolationStep>
       <isolationStep id="q2">
         <action>Read the alarm message.</action>
         <isolationStepQuestion>Does it say SatNOGS rejected the API key?</isolationStepQuestion>
-        <yesAnswer nextActionRefId="e2"/>
-        <noAnswer nextActionRefId="q3"/>
+        <isolationStepAnswer><yesNoAnswer><yesAnswer nextActionRefId="e2"/><noAnswer nextActionRefId="q3"/></yesNoAnswer></isolationStepAnswer>
       </isolationStep>
       <isolationStep id="q3">
         <action>On the server, read the fetch log: <cmd>journalctl -u downlink-desk-fetch -n 50</cmd>.</action>
         <isolationStepQuestion>Does the log say the system clock is behind the newest stored data?</isolationStepQuestion>
-        <yesAnswer nextActionRefId="e3"/>
-        <noAnswer nextActionRefId="q4"/>
+        <isolationStepAnswer><yesNoAnswer><yesAnswer nextActionRefId="e3"/><noAnswer nextActionRefId="q4"/></yesNoAnswer></isolationStepAnswer>
       </isolationStep>
       <isolationStep id="q4">
         <action>On the server, check the internet connection: <cmd>curl -sI https://db.satnogs.org</cmd>.</action>
         <isolationStepQuestion>Does the command return a response from SatNOGS?</isolationStepQuestion>
-        <yesAnswer nextActionRefId="q5"/>
-        <noAnswer nextActionRefId="e4"/>
+        <isolationStepAnswer><yesNoAnswer><yesAnswer nextActionRefId="q5"/><noAnswer nextActionRefId="e4"/></yesNoAnswer></isolationStepAnswer>
       </isolationStep>
       <isolationStep id="q5">
         <action>On the server, run a fetch now: <cmd>cd ~/downlink-desk &amp;&amp; .venv/bin/python -m downlink_desk.fetch --force</cmd>.</action>
         <isolationStepQuestion>Does it finish with a line saying how many new frames were stored?</isolationStepQuestion>
-        <yesAnswer nextActionRefId="e5"/>
-        <noAnswer nextActionRefId="e6"/>
+        <isolationStepAnswer><yesNoAnswer><yesAnswer nextActionRefId="e5"/><noAnswer nextActionRefId="e6"/></yesNoAnswer></isolationStepAnswer>
       </isolationStep>
       <isolationProcedureEnd id="e1">
         <action>Add the key. Get a SatNOGS DB API key from db.satnogs.org (your avatar, then Settings / API Token). On the server, save it with <cmd>echo YOURKEY &gt; ~/downlink-desk/secrets/satnogs_token</cmd>. The next fetch uses it.</action>
       </isolationProcedureEnd>
       <isolationProcedureEnd id="e2">
-        <action>The key is wrong. The most common cause is a SatNOGS Network key instead of a SatNOGS DB key; they are different. The other cause is extra characters pasted with the key. Get the DB key again and save it as in the step above.</action>
+        <action>The key is wrong. The most common cause is a SatNOGS Network key instead of a SatNOGS DB key; they are different. The other cause is extra characters pasted with the key. Get the DB key again and save it as in Result A.</action>
       </isolationProcedureEnd>
       <isolationProcedureEnd id="e3">
         <action>The server's clock has not synced since boot. A Raspberry Pi has no clock battery, so this can happen after a power cut. Check the network connection. The fetch resumes by itself once the clock is set.</action>
@@ -62,6 +67,10 @@
       <isolationProcedureEnd id="e6">
         <action>SatNOGS may be unavailable, or may be limiting requests. Downlink Desk waits and retries by itself. Do not shorten the fetch interval: SatNOGS is run by volunteers. Write a log note, check again after the next fetch, and report it if the alarm is still open at handover.</action>
       </isolationProcedureEnd>
+      </isolationMainProcedure>
+      <closeRqmts>
+        <reqCondGroup><reqCond>The cause is found and recorded in the log, or the alert is handed over with notes.</reqCond></reqCondGroup>
+      </closeRqmts>
     </faultIsolation>
   </content>
 </dmodule>

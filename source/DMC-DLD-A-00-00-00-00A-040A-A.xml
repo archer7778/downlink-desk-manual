@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-10-00-00-00A-040A-A" type="descript" issue="001" date="2026-11-03">
-  <title>System description</title>
+<dmodule code="DMC-DLD-A-00-00-00-00A-040A-A" type="descript" issue="001" date="2026-11-03">
+  <dmTitle><techName>Downlink Desk</techName><infoName>Description</infoName></dmTitle>
+  <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
     <levelledPara>
