@@ -9,10 +9,9 @@
         <row head="yes"><entry>Abbreviation</entry><entry>Meaning</entry></row>
         <row><entry>API</entry><entry>Application programming interface</entry></row>
         <row><entry>NOAA</entry><entry>US National Oceanic and Atmospheric Administration</entry></row>
-        <row><entry>NORAD number</entry><entry>The catalogue number that identifies a satellite in orbit</entry></row>
-        <row><entry>SAA</entry><entry>South Atlantic Anomaly</entry></row>
         <row><entry>SatNOGS</entry><entry>Satellite Networked Open Ground Station, a network of volunteer ground stations</entry></row>
-        <row><entry>SGP4</entry><entry>Simplified General Perturbations 4, the standard model for predicting a satellite's position</entry></row>
+        <row><entry>SSH</entry><entry>Secure Shell, used to log in to the server from another computer</entry></row>
+        <row><entry>TLE</entry><entry>Two-line element set, the standard format for a satellite's orbit</entry></row>
       </table>
     </levelledPara>
     <levelledPara>

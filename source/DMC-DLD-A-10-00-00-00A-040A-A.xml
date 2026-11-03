@@ -17,8 +17,8 @@
       <para>The system has three running parts on the server:</para>
       <randomList>
         <listItem><para><emphasis>The fetch job</emphasis> runs every 30 minutes by default. It asks the SatNOGS database for new frames, decodes them, stores them, updates the learned model and sends phone alerts. It waits at least 11 seconds between requests to SatNOGS and backs off when asked.</para></listItem>
-        <listItem><para><emphasis>The web console</emphasis> serves the operator screens and a read-only data interface on port 8080 by default. Open consoles receive new frames as soon as they are stored.</para></listItem>
-        <listItem><para><emphasis>The updater</emphasis> checks for a new version 5 minutes after boot and nightly at about 03:30. If the new version does not start, it rolls back.</para></listItem>
+        <listItem><para><emphasis>The web console</emphasis> serves the operator screens on port 8080 by default, and records operator actions in the audit trail. Open consoles receive new frames as soon as they are stored.</para></listItem>
+        <listItem><para><emphasis>The updater</emphasis> checks for a new version 5 minutes after boot and nightly at about 03:30, and installs it unless automatic updates are turned off. If the new version does not start, it rolls back.</para></listItem>
       </randomList>
     </levelledPara>
     <levelledPara>

@@ -28,7 +28,7 @@
       <title>Conventions</title>
       <randomList>
         <listItem><para>Names of buttons, tabs and fields on screen are shown like this: <ui>Acknowledge</ui>.</para></listItem>
-        <listItem><para>Commands you type on the server are shown like this: <cmd>sudo systemctl restart downlink-desk-web</cmd>.</para></listItem>
+        <listItem><para>Commands you type on the server are shown like this: <cmd>sudo systemctl restart downlink-desk-web</cmd>. They assume Downlink Desk is installed in <cmd>~/downlink-desk</cmd>, as in the setup guide.</para></listItem>
         <listItem><para>A <emphasis>warning</emphasis> tells you about a risk of a wrong operational decision or loss of data. A <emphasis>caution</emphasis> tells you about a risk of a wrong record or wasted effort. A <emphasis>note</emphasis> gives useful information.</para></listItem>
       </randomList>
     </levelledPara>

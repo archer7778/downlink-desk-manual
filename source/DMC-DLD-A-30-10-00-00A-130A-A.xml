@@ -41,7 +41,7 @@
           <para><ui>Open alerts reviewed and acknowledged</ui>: respond to each open alert. Refer to <dmRef target="DMC-DLD-A-30-20-00-00A-130A-A"/>.</para>
         </proceduralStep>
         <proceduralStep id="s5-3">
-          <para><ui>Fetcher healthy: last fetch succeeded</ui>: check the <ui>Ground segment</ui> panel. If the last fetch failed, refer to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</para>
+          <para><ui>Fetcher healthy: last fetch succeeded</ui>: in the <ui>Ground segment</ui> panel, check that <ui>SatNOGS link</ui> shows <ui>Operational</ui>. If it shows <ui>Degraded</ui>, <ui>Down</ui>, <ui>Key rejected</ui> or <ui>No API key</ui>, refer to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</para>
         </proceduralStep>
         <proceduralStep id="s5-4">
           <para><ui>Limits still sensible</ui>: look for channels showing <ui>No limits</ui>, and for limits that no longer fit the satellite's behaviour. To change them, refer to <dmRef target="DMC-DLD-A-30-30-00-00A-130A-A"/>.</para>
