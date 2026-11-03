@@ -23,7 +23,7 @@
         <row><entry>Satellite may have gone silent</entry><entry>Alarm</entry><entry>3 scheduled observations in a row deliver nothing, counting passes at least 15° high, after a 3-hour upload grace period</entry></row>
         <row><entry>Server cannot reach SatNOGS</entry><entry>Alarm</entry><entry>No successful fetch for three fetch intervals (90 minutes at the default 30)</entry></row>
         <row><entry>SatNOGS rejects the API key, or no key is set</entry><entry>Alarm</entry><entry>Immediately</entry></row>
-        <row><entry>Server disk getting full</entry><entry>Caution or alarm</entry><entry>Below 10% or 1 GB free</entry></row>
+        <row><entry>Server disk getting full</entry><entry>Caution, then alarm</entry><entry>Caution below 10% or 1 GB free; alarm below 3% or 300 MB free</entry></row>
         <row><entry>Subsystem restart</entry><entry>Event</entry><entry>A restart counter goes up</entry></row>
       </table>
       <para>Channels that drift away from their learned normal are flagged on the channel and in the spacecraft status, and sent to the phone, separately from the limit alerts.</para>

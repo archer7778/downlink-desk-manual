@@ -39,7 +39,7 @@
         <row head="yes"><entry>Tab</entry><entry>Use it to</entry></row>
         <row><entry><ui>Console</ui></entry><entry>See spacecraft status, alerts, telemetry channels, the live globe, the daily check and the ground segment status.</entry></row>
         <row><entry><ui>Frames</ui></entry><entry>Look at individual frames received from SatNOGS.</entry></row>
-        <row><entry><ui>Battery</ui></entry><entry>Review battery charge, eclipse depth and estimated life. Shown only for satellites with battery channels.</entry></row>
+        <row><entry><ui>Battery</ui></entry><entry>Review battery charge, eclipse depth and estimated life. Shown only when the satellite has enough battery data.</entry></row>
         <row><entry><ui>Passes &amp; stations</ui></entry><entry>See upcoming passes and which stations heard the satellite.</entry></row>
         <row><entry><ui>Audit trail</ui></entry><entry>Read and verify the signed record of actions.</entry></row>
         <row><entry><ui>Shift handover</ui></entry><entry>Write handover notes and sign the console over.</entry></row>
