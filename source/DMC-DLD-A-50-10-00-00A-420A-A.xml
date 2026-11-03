@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-50-10-00-00A-420A-A" type="fault" issue="001" date="2026-11-03">
+  <title>Fault isolation: no frames, or satellite may have gone silent</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <faultIsolation>
+      <faultDescr>
+        <para>One of these alerts is open:</para>
+        <randomList>
+          <listItem><para><emphasis>No decoded frames for</emphasis> a period of time (caution after 12 hours, alarm after 24 hours by default).</para></listItem>
+          <listItem><para><emphasis>Scheduled observations in a row produced no frames</emphasis> (alarm). The message may include the chance that the satellite has really gone quiet.</para></listItem>
+        </randomList>
+        <note><notePara>Frames arrive only when a volunteer station has heard the satellite and uploaded the recording. Gaps of several hours are normal. Most of these alerts are caused by the ground network, not the spacecraft.</notePara></note>
+      </faultDescr>
+      <isolationStep id="q1">
+        <action>Look at the other open alerts on the <ui>Console</ui> tab.</action>
+        <isolationStepQuestion>Is there also an alert that the server cannot reach SatNOGS, or that the API key is missing or rejected?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="e1"/>
+        <noAnswer nextActionRefId="q2"/>
+      </isolationStep>
+      <isolationStep id="q2">
+        <action>Find the satellite's page on db.satnogs.org and look at its most recent frames.</action>
+        <isolationStepQuestion>Has any station uploaded frames for the satellite since the last frame shown in Downlink Desk?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="q3"/>
+        <noAnswer nextActionRefId="q4"/>
+      </isolationStep>
+      <isolationStep id="q3">
+        <action>Select the <ui>Frames</ui> tab and look at the newest frames.</action>
+        <isolationStepQuestion>Are the new frames listed, but shown as unrecognised or not decoded?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="e2"/>
+        <noAnswer nextActionRefId="e3"/>
+      </isolationStep>
+      <isolationStep id="q4">
+        <action>Select the <ui>Passes &amp; stations</ui> tab. Look at the stations that missed the satellite and their <ui>Hit rate (30 d)</ui>.</action>
+        <isolationStepQuestion>Do the stations that missed usually hear the satellite (a high hit rate), and is the alert's stated chance of silence high?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="e5"/>
+        <noAnswer nextActionRefId="e4"/>
+      </isolationStep>
+      <isolationProcedureEnd id="e1">
+        <action>The cause is on the ground side: Downlink Desk is not collecting data. Go to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e2">
+        <action>The satellite is transmitting, but its frames cannot be decoded. The satellite may have changed its telemetry format, or the frames may be other radio traffic. Write a log note with the time of the first undecoded frame. Report it to whoever maintains the server, so the decoder can be checked.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e3">
+        <action>The frames exist on SatNOGS but have not been collected yet. Wait for the next fetch, which runs every 30 minutes by default. If you have access to the server, you can fetch now with <cmd>cd ~/downlink-desk &amp;&amp; .venv/bin/python -m downlink_desk.fetch --force</cmd>. If the frames still do not appear, go to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e4">
+        <action>The misses are most likely from stations that often miss the satellite, not a silent spacecraft. Acknowledge the alert. Write a log note naming the stations. If the alert will keep firing until the next good pass, shelve it for 6 hours with that reason. Check again after the next scheduled pass by a reliable station.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e5">
+        <action>The satellite may have gone silent. Acknowledge the alert and leave it open. Write a log note with the time of the last decoded frame and the stations that missed. Check the space weather panel for a storm at that time, and check the satellite team's public channels for planned downtime. Downlink Desk is not the mission's own system: do not report the satellite as lost on the basis of this alert alone. Hand the alert over at the end of the shift.</action>
+      </isolationProcedureEnd>
+    </faultIsolation>
+  </content>
+</dmodule>

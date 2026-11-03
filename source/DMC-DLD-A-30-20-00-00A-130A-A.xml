@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-30-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
+  <title>Respond to an alert</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <preliminaryRqmts>
+      <reqCondGroup>
+        <reqCond>You are on duty, with your call sign entered.</reqCond>
+        <reqCond>The alert is shown in the <ui>Alerts</ui> panel on the <ui>Console</ui> tab.</reqCond>
+      </reqCondGroup>
+      <reqTime>5 to 20 minutes for each alert.</reqTime>
+      <reqSafety>
+        <warning><warningAndCautionPara>The values on screen are the latest received, not the spacecraft's state now. Check the time of the reading before you act.</warningAndCautionPara></warning>
+        <warning><warningAndCautionPara>A shelved alert is hidden from the main list. Give a reason the next operator can act on, and shelve for the shortest time that makes sense.</warningAndCautionPara></warning>
+      </reqSafety>
+    </preliminaryRqmts>
+    <mainProcedure>
+      <proceduralStep id="s1">
+        <para>Read the alert. Note its severity (<ui>Alarm</ui>, <ui>Caution</ui> or <ui>Event</ui>), the channel or condition, and when it was raised.</para>
+      </proceduralStep>
+      <proceduralStep id="s2">
+        <para>Select <ui>Acknowledge</ui> on the alert.</para>
+        <para>Check that the alert now shows <ui>Acked</ui> with your call sign.</para>
+        <note><notePara>Acknowledging records that you have seen the alert. It does not clear it. The alert closes by itself once its condition clears.</notePara></note>
+      </proceduralStep>
+      <proceduralStep id="s3">
+        <para>Find the cause.</para>
+        <proceduralStep id="s3-1">
+          <para>For a limit alert, select the channel name in the alert. Look at the last 7 days of the channel on the chart.</para>
+          <randomList>
+            <listItem><para>Grey bands show eclipse. A temperature that drops in each eclipse and recovers in sunlight is normal.</para></listItem>
+            <listItem><para>Red ticks along the top show geomagnetic storms. Check whether the reading lines up with one.</para></listItem>
+            <listItem><para>Coloured bands show the caution and alarm zones.</para></listItem>
+          </randomList>
+        </proceduralStep>
+        <proceduralStep id="s3-2">
+          <para>For an alert that no new frames have arrived, or that the satellite may have gone silent, refer to <dmRef target="DMC-DLD-A-50-10-00-00A-420A-A"/>.</para>
+        </proceduralStep>
+        <proceduralStep id="s3-3">
+          <para>For an alert that the server cannot reach SatNOGS or that the API key was rejected, refer to <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>.</para>
+        </proceduralStep>
+      </proceduralStep>
+      <proceduralStep id="s4">
+        <para>Record what you found. Type a short note in the log note box on the <ui>Console</ui> tab and select <ui>Log note</ui>.</para>
+      </proceduralStep>
+      <proceduralStep id="s5">
+        <para>If the alert is expected and you need it out of the main list for a while, shelve it:</para>
+        <proceduralStep id="s5-1"><para>Select <ui>Shelve</ui> on the alert.</para></proceduralStep>
+        <proceduralStep id="s5-2"><para>Choose how long: 1 hour, 6 hours, 1 day or 1 week.</para></proceduralStep>
+        <proceduralStep id="s5-3"><para>Type a reason the next operator can act on, for example: "Battery temperature low in each eclipse since season change; within mission behaviour. Review limits Friday."</para></proceduralStep>
+        <proceduralStep id="s5-4"><para>Select the second <ui>Shelve</ui> button, next to the reason. Check that the alert now appears under <ui>Shelved</ui>.</para></proceduralStep>
+      </proceduralStep>
+      <proceduralStep id="s6">
+        <para>If a limit is wrong rather than the value, change the limit. Refer to <dmRef target="DMC-DLD-A-30-30-00-00A-130A-A"/>.</para>
+      </proceduralStep>
+    </mainProcedure>
+    <closeRqmts>
+      <reqCond>The alert is acknowledged, the cause is noted in the log, and the alert is either closed, open with a known cause, or shelved with a reason.</reqCond>
+    </closeRqmts>
+  </content>
+</dmodule>

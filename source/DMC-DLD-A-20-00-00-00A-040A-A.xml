@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-20-00-00-00A-040A-A" type="descript" issue="001" date="2026-11-03">
+  <title>Alert system description</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <levelledPara>
+      <title>Severities</title>
+      <table>
+        <row head="yes"><entry>Severity</entry><entry>Meaning</entry></row>
+        <row><entry>Alarm</entry><entry>A condition that needs attention now, such as a value outside its alarm limits or a satellite that may have gone silent.</entry></row>
+        <row><entry>Caution</entry><entry>A condition that may need attention, such as a value outside its caution limits.</entry></row>
+        <row><entry>Event</entry><entry>Something that happened once, such as a subsystem restart. Events do not clear; you acknowledge them.</entry></row>
+      </table>
+      <para>Each channel can have four limits: alarm low, caution low, caution high and alarm high. A channel without limits shows <ui>No limits</ui> rather than <ui>Nominal</ui>, so an empty limit is never mistaken for a good value.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>What raises an alert</title>
+      <table>
+        <row head="yes"><entry>Condition</entry><entry>Severity</entry><entry>Default threshold</entry></row>
+        <row><entry>Channel outside its caution limits</entry><entry>Caution</entry><entry>Set per channel</entry></row>
+        <row><entry>Channel outside its alarm limits</entry><entry>Alarm</entry><entry>Set per channel</entry></row>
+        <row><entry>No new decoded frames</entry><entry>Caution, then alarm</entry><entry>Caution after 12 hours; alarm after 24 hours</entry></row>
+        <row><entry>Satellite may have gone silent</entry><entry>Alarm</entry><entry>3 scheduled observations in a row deliver nothing, counting passes at least 15° high, after a 3-hour upload grace period</entry></row>
+        <row><entry>Server cannot reach SatNOGS</entry><entry>Alarm</entry><entry>No successful fetch for three fetch intervals (90 minutes at the default 30)</entry></row>
+        <row><entry>SatNOGS rejects the API key, or no key is set</entry><entry>Alarm</entry><entry>Immediately</entry></row>
+        <row><entry>Server disk getting full</entry><entry>Caution or alarm</entry><entry>Below 10% or 1 GB free</entry></row>
+        <row><entry>Subsystem restart</entry><entry>Event</entry><entry>A restart counter goes up</entry></row>
+      </table>
+      <para>Channels that drift away from their learned normal are flagged on the channel and in the spacecraft status, and sent to the phone, separately from the limit alerts.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>Alert states</title>
+      <randomList>
+        <listItem><para><emphasis>Open, not acknowledged:</emphasis> new. Shown at the top of the list with an <ui>Acknowledge</ui> button.</para></listItem>
+        <listItem><para><emphasis>Open, acknowledged:</emphasis> an operator has seen it, but the condition is still active.</para></listItem>
+        <listItem><para><emphasis>Shelved:</emphasis> hidden for a chosen time (1 hour, 6 hours, 1 day or 1 week) with a reason. Shelved alerts are listed under <ui>Shelved</ui> below the main list.</para></listItem>
+        <listItem><para><emphasis>Closed:</emphasis> acknowledged, and the condition has cleared.</para></listItem>
+      </randomList>
+      <note><notePara>An alert closes only when it has been acknowledged and its condition has cleared. A condition that clears by itself without acknowledgement stays in the list, so nothing is missed between shifts.</notePara></note>
+    </levelledPara>
+    <levelledPara>
+      <title>Phone alerts</title>
+      <para>If the server has an ntfy topic set, the fetch job pushes these to the operator's phone: alarm-level limit breaks, restarts, a satellite that may have gone silent, a channel starting to drift, three failed fetches in a row and low disk space. Each event is sent once. A morning summary of the last 24 hours is also sent at the configured hour.</para>
+    </levelledPara>
+  </content>
+</dmodule>

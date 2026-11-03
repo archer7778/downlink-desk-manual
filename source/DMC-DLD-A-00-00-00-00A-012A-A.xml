@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-00-00-00-00A-012A-A" type="descript" issue="001" date="2026-11-03">
+  <title>Warnings and cautions</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <levelledPara>
+      <title>Warnings</title>
+      <para>These warnings apply throughout the manual. Read them before you operate the console.</para>
+      <warning>
+        <warningAndCautionPara>Downlink Desk cannot command a spacecraft and is not the mission team's own system. Do not use its alerts or limits to make decisions about real spacecraft hardware.</warningAndCautionPara>
+      </warning>
+      <warning>
+        <warningAndCautionPara>Telemetry arrives minutes to hours after a pass, and only when a volunteer station heard the satellite. A value on screen is the latest one received, not the spacecraft's state now. Check the time of the reading before you act on it.</warningAndCautionPara>
+      </warning>
+      <warning>
+        <warningAndCautionPara>A shelved alert does not appear in the main alert list until the shelf expires. Always give a reason that the next operator can act on, and shelve for the shortest time that makes sense.</warningAndCautionPara>
+      </warning>
+    </levelledPara>
+    <levelledPara>
+      <title>Cautions</title>
+      <caution>
+        <warningAndCautionPara>Every action is signed with the call sign entered at the top of the console. Enter your own call sign before you acknowledge, shelve, change limits or sign a handover, or the record will name the wrong person.</warningAndCautionPara>
+      </caution>
+      <caution>
+        <warningAndCautionPara>Limits suggested from data are based on the satellite's own recent history. If that history already contains a fault, the suggested limits will hide it. Review suggested limits before you save them.</warningAndCautionPara>
+      </caution>
+      <caution>
+        <warningAndCautionPara>The audit trail is tamper-evident, not tamper-proof. Someone with access to the server's files could rebuild the chain. Control who can log in to the server.</warningAndCautionPara>
+      </caution>
+    </levelledPara>
+  </content>
+</dmodule>

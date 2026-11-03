@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Publication module: the order and grouping of data modules in the manual. -->
+<pm code="PMC-DLD-A-00001-00" issue="001" date="2026-11-03">
+  <title>Downlink Desk Operator's Manual</title>
+  <subtitle>Operating procedures and fault isolation for the Downlink Desk ground-segment console</subtitle>
+  <applic>Downlink Desk 0.17.x</applic>
+  <author>Archie Maclean</author>
+  <entry title="Front matter">
+    <dmRef target="DMC-DLD-A-00-00-00-00A-018A-A"/>
+    <dmRef target="DMC-DLD-A-00-00-00-00A-012A-A"/>
+    <dmRef target="DMC-DLD-A-00-00-00-00A-005A-A"/>
+  </entry>
+  <entry title="Description">
+    <dmRef target="DMC-DLD-A-10-00-00-00A-040A-A"/>
+    <dmRef target="DMC-DLD-A-20-00-00-00A-040A-A"/>
+  </entry>
+  <entry title="Operating procedures">
+    <dmRef target="DMC-DLD-A-30-10-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-30-20-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-30-30-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-30-40-00-00A-130A-A"/>
+    <dmRef target="DMC-DLD-A-40-00-00-00A-130A-A"/>
+  </entry>
+  <entry title="Fault isolation">
+    <dmRef target="DMC-DLD-A-50-10-00-00A-420A-A"/>
+    <dmRef target="DMC-DLD-A-50-20-00-00A-420A-A"/>
+    <dmRef target="DMC-DLD-A-50-30-00-00A-420A-A"/>
+  </entry>
+</pm>

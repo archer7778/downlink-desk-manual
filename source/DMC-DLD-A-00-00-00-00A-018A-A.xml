@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-00-00-00-00A-018A-A" type="descript" issue="001" date="2026-11-03">
+  <title>Introduction</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <levelledPara>
+      <title>Purpose</title>
+      <para>This manual tells operators how to run Downlink Desk, a ground-segment operations console for satellites tracked through the SatNOGS network. It covers starting a shift, responding to alerts, changing limits, handing over, checking the audit trail and isolating common faults.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>Who this manual is for</title>
+      <para>Operators who watch one or more satellites on a running Downlink Desk console. You do not need to know how the software works inside. For installation, see the setup guide in the Downlink Desk repository.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>Applicability</title>
+      <para>This issue applies to Downlink Desk version 0.17.x running on Debian, Ubuntu or Raspberry Pi OS. Screens and commands may differ in later versions.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>How the manual is organised</title>
+      <para>The manual is made of data modules. Each data module covers one topic and has its own code, issue number and date. There are three types:</para>
+      <randomList>
+        <listItem><para><emphasis>Descriptive</emphasis> modules explain what the system is and how it behaves.</para></listItem>
+        <listItem><para><emphasis>Procedural</emphasis> modules give numbered steps for a task, with the conditions you need before you start.</para></listItem>
+        <listItem><para><emphasis>Fault isolation</emphasis> modules take you from a symptom to its cause through yes/no questions.</para></listItem>
+      </randomList>
+    </levelledPara>
+    <levelledPara>
+      <title>Conventions</title>
+      <randomList>
+        <listItem><para>Names of buttons, tabs and fields on screen are shown like this: <ui>Acknowledge</ui>.</para></listItem>
+        <listItem><para>Commands you type on the server are shown like this: <cmd>sudo systemctl restart downlink-desk-web</cmd>.</para></listItem>
+        <listItem><para>A <emphasis>warning</emphasis> tells you about a risk of a wrong operational decision or loss of data. A <emphasis>caution</emphasis> tells you about a risk of a wrong record or wasted effort. A <emphasis>note</emphasis> gives useful information.</para></listItem>
+      </randomList>
+    </levelledPara>
+    <levelledPara>
+      <title>Status of the system</title>
+      <warning>
+        <warningAndCautionPara>Downlink Desk is not flight software. It cannot command a spacecraft, it is not affiliated with any satellite team, and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</warningAndCautionPara>
+      </warning>
+    </levelledPara>
+  </content>
+</dmodule>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-30-30-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
+  <title>Set or change channel limits</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <preliminaryRqmts>
+      <reqCondGroup>
+        <reqCond>You are on duty, with your call sign entered.</reqCond>
+        <reqCond>You have a reason for the change that another operator would accept.</reqCond>
+        <reqCond>The channel is not a counter. Counters, such as restart counts, do not have limits.</reqCond>
+      </reqCondGroup>
+      <reqTime>About 10 minutes.</reqTime>
+      <reqSafety>
+        <caution><warningAndCautionPara>Limits suggested from data come from the satellite's own recent history. If that history already contains a fault, the suggested limits will hide it. Review them before you save.</warningAndCautionPara></caution>
+      </reqSafety>
+    </preliminaryRqmts>
+    <mainProcedure>
+      <proceduralStep id="s1">
+        <para>On the <ui>Console</ui> tab, select the channel in the <ui>Spacecraft telemetry</ui> list. Its history and limits open in a side panel.</para>
+      </proceduralStep>
+      <proceduralStep id="s2">
+        <para>Look at the last 7 days on the chart, with the current caution and alarm zones. Decide whether the limits or the values are wrong.</para>
+      </proceduralStep>
+      <proceduralStep id="s3">
+        <para>Enter the new limits in the <ui>Alarm low</ui>, <ui>Caution low</ui>, <ui>Caution high</ui> and <ui>Alarm high</ui> fields. Leave a field empty for no limit on that side.</para>
+        <proceduralStep id="s3-1">
+          <para>To start from the data instead, select <ui>Suggest from data</ui>. It sets caution half the normal range outside the satellite's recent values, and alarm a full range outside. Review the values it fills in.</para>
+        </proceduralStep>
+      </proceduralStep>
+      <proceduralStep id="s4">
+        <para>Check the order: alarm low must be below caution low, and caution high below alarm high.</para>
+      </proceduralStep>
+      <proceduralStep id="s5">
+        <para>Type the reason for the change in the reason field.</para>
+      </proceduralStep>
+      <proceduralStep id="s6">
+        <para>Select <ui>Save limits</ui>.</para>
+        <note><notePara>New limits apply from now on. Past readings are not re-judged.</notePara></note>
+      </proceduralStep>
+      <proceduralStep id="s7">
+        <para>Select the <ui>Audit trail</ui> tab and check that the change is recorded with your call sign and reason.</para>
+      </proceduralStep>
+    </mainProcedure>
+    <closeRqmts>
+      <reqCond>The new limits are shown on the channel and signed in the audit trail.</reqCond>
+    </closeRqmts>
+  </content>
+</dmodule>

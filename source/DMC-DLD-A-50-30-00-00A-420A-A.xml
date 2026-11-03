@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-50-30-00-00A-420A-A" type="fault" issue="001" date="2026-11-03">
+  <title>Fault isolation: the console does not open</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <faultIsolation>
+      <faultDescr>
+        <para>The console address does not open in the browser, or the console says it cannot reach the server.</para>
+      </faultDescr>
+      <isolationStep id="q1">
+        <action>Check that your device is on the same network as the server, or connected through the team's private network.</action>
+        <isolationStepQuestion>Is your device on the right network?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="q2"/>
+        <noAnswer nextActionRefId="e1"/>
+      </isolationStep>
+      <isolationStep id="q2">
+        <action>Check whether a VPN is running on your device.</action>
+        <isolationStepQuestion>Is a VPN running?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="e2"/>
+        <noAnswer nextActionRefId="q3"/>
+      </isolationStep>
+      <isolationStep id="q3">
+        <action>Try to connect to the server over SSH, for example <cmd>ssh yourusername@groundpi.local</cmd>.</action>
+        <isolationStepQuestion>Does the server answer?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="q4"/>
+        <noAnswer nextActionRefId="e3"/>
+      </isolationStep>
+      <isolationStep id="q4">
+        <action>On the server, check the console service: <cmd>systemctl status downlink-desk-web</cmd>.</action>
+        <isolationStepQuestion>Does it show the service as active (running)?</isolationStepQuestion>
+        <yesAnswer nextActionRefId="e5"/>
+        <noAnswer nextActionRefId="e4"/>
+      </isolationStep>
+      <isolationProcedureEnd id="e1">
+        <action>Connect your device to the server's network, or to the team's private network, and open the console address again.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e2">
+        <action>The VPN is probably blocking local traffic. Turn on its option to allow local network access, or disconnect it, and open the console address again.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e3">
+        <action>The server is off, has lost power or is not on the network. Check its power supply and network connection. A Raspberry Pi needs a proper 5 V, 2.5 A supply; a weak one causes random crashes. After power returns, the console starts by itself within a few minutes.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e4">
+        <action>Restart the console service: <cmd>sudo systemctl restart downlink-desk-web</cmd>. If it does not stay running, read its log with <cmd>journalctl -u downlink-desk-web -n 50</cmd> and report the error to whoever maintains the server.</action>
+      </isolationProcedureEnd>
+      <isolationProcedureEnd id="e5">
+        <action>The service is running, so the problem is between your device and the server. Check the address and port (8080 by default), and try the server's IP address in place of its name. If an update ran recently, check the <ui>About</ui> tab once you are in.</action>
+      </isolationProcedureEnd>
+    </faultIsolation>
+  </content>
+</dmodule>

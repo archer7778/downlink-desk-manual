@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule code="DMC-DLD-A-10-00-00-00A-040A-A" type="descript" issue="001" date="2026-11-03">
+  <title>System description</title>
+  <applic>Downlink Desk 0.17.x</applic>
+  <content>
+    <levelledPara>
+      <title>What the system does</title>
+      <para>Downlink Desk watches satellites in orbit using telemetry collected by the SatNOGS volunteer ground-station network. It decodes the telemetry, learns what normal looks like for each spacecraft, raises alerts when something departs from normal, and keeps a signed record of every operator action.</para>
+      <para>It is read-only towards the spacecraft. It receives data; it never sends commands.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>How data flows through the system</title>
+      <figure id="fig-dataflow">
+        <title>Data flow</title>
+        <graphic src="graphics/data-flow.svg" alt="SatNOGS stations upload frames to the SatNOGS database. The fetch job collects and decodes them every 30 minutes and stores them in a local database, together with NOAA space weather every 3 hours. The web console reads the database and shows live data to operators; phone alerts go out through ntfy."/>
+      </figure>
+      <para>The system has three running parts on the server:</para>
+      <randomList>
+        <listItem><para><emphasis>The fetch job</emphasis> runs every 30 minutes by default. It asks the SatNOGS database for new frames, decodes them, stores them, updates the learned model and sends phone alerts. It waits at least 11 seconds between requests to SatNOGS and backs off when asked.</para></listItem>
+        <listItem><para><emphasis>The web console</emphasis> serves the operator screens and a read-only data interface on port 8080 by default. Open consoles receive new frames as soon as they are stored.</para></listItem>
+        <listItem><para><emphasis>The updater</emphasis> checks for a new version 5 minutes after boot and nightly at about 03:30. If the new version does not start, it rolls back.</para></listItem>
+      </randomList>
+    </levelledPara>
+    <levelledPara>
+      <title>Data sources</title>
+      <table>
+        <row head="yes"><entry>Source</entry><entry>What it provides</entry><entry>How often</entry></row>
+        <row><entry>SatNOGS database</entry><entry>Telemetry frames uploaded by volunteer stations</entry><entry>Every fetch, 30 minutes by default</entry></row>
+        <row><entry>SatNOGS network schedule</entry><entry>Which stations plan to listen, and when</entry><entry>Every 3 hours</entry></row>
+        <row><entry>NOAA Space Weather Prediction Center</entry><entry>Geomagnetic storms, solar flares and solar flux</entry><entry>Every 3 hours</entry></row>
+        <row><entry>Orbit data (TLE)</entry><entry>The satellite's orbit, used for position, sunlight and passes</entry><entry>Every 12 hours</entry></row>
+      </table>
+      <note><notePara>Data arrives only after a volunteer station has heard the satellite and uploaded the recording. Gaps of several hours are normal.</notePara></note>
+    </levelledPara>
+    <levelledPara>
+      <title>The console screen</title>
+      <para>The console has these tabs:</para>
+      <table>
+        <row head="yes"><entry>Tab</entry><entry>Use it to</entry></row>
+        <row><entry><ui>Console</ui></entry><entry>See spacecraft status, alerts, telemetry channels, the live globe, the daily check and the ground segment status.</entry></row>
+        <row><entry><ui>Frames</ui></entry><entry>Look at individual frames received from SatNOGS.</entry></row>
+        <row><entry><ui>Battery</ui></entry><entry>Review battery charge, eclipse depth and estimated life. Shown only for satellites with battery channels.</entry></row>
+        <row><entry><ui>Passes &amp; stations</ui></entry><entry>See upcoming passes and which stations heard the satellite.</entry></row>
+        <row><entry><ui>Audit trail</ui></entry><entry>Read and verify the signed record of actions.</entry></row>
+        <row><entry><ui>Shift handover</ui></entry><entry>Write handover notes and sign the console over.</entry></row>
+        <row><entry><ui>About</ui></entry><entry>Check the version, update status and credits.</entry></row>
+      </table>
+      <para>Two fields at the top of the screen control who you are: <ui>Call sign</ui>, which signs your actions, and <ui>Passcode</ui>, which appears only if the server requires a passcode for changes.</para>
+    </levelledPara>
+    <levelledPara>
+      <title>Learned normal</title>
+      <para>A small satellite warms in sunlight and cools in Earth's shadow on every orbit. For each channel, Downlink Desk learns the typical value at each point of that cycle and compares the last two days with the three weeks before. This lets it flag a channel that is drifting while it is still well inside its limits. The model needs about 25 samples and a few days of history for a channel before it judges it.</para>
+    </levelledPara>
+  </content>
+</dmodule>

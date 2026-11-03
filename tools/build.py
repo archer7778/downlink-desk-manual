@@ -1,0 +1,358 @@
+#!/usr/bin/env python3
+"""Build the Downlink Desk Operator's Manual from its XML data modules.
+
+Reads source/publication.xml and every data module it lists, checks them, and writes:
+  site/index.html        title page, contents and list of effective data modules
+  site/dm/<code>.html    one page per data module
+  site/manual.html       the whole manual as one page, for printing to PDF
+
+Standard library only. Exits non-zero if any check fails, so a broken manual is never published.
+Usage: python3 tools/build.py [--check]   (--check validates without writing anything)
+"""
+import html
+import shutil
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "source"
+OUT = ROOT / "site"
+PDF_NAME = "downlink-desk-operators-manual.pdf"
+
+TYPES = {"descript": "Descriptive", "proced": "Procedural", "fault": "Fault isolation"}
+# Every element the profile allows. Anything else is a build error, so typos can't slip through.
+ALLOWED = {
+    "dmodule", "title", "applic", "content", "levelledPara", "para", "randomList", "listItem",
+    "emphasis", "ui", "cmd", "note", "notePara", "warning", "caution", "warningAndCautionPara",
+    "table", "row", "entry", "figure", "graphic", "dmRef", "preliminaryRqmts", "reqCondGroup",
+    "reqCond", "reqTime", "reqSafety", "mainProcedure", "proceduralStep", "closeRqmts",
+    "faultIsolation", "faultDescr", "isolationStep", "action", "isolationStepQuestion",
+    "yesAnswer", "noAnswer", "isolationProcedureEnd",
+}
+
+errors = []
+
+
+def err(where, msg):
+    errors.append(f"{where}: {msg}")
+
+
+# ---------------------------------------------------------------- loading and checks
+
+def load():
+    pm = ET.parse(SRC / "publication.xml").getroot()
+    groups, order = [], []
+    for e in pm.findall("entry"):
+        codes = [r.get("target") for r in e.findall("dmRef")]
+        groups.append((e.get("title"), codes))
+        order += codes
+    dms = {}
+    for f in sorted(SRC.glob("DMC-*.xml")):
+        try:
+            root = ET.parse(f).getroot()
+        except ET.ParseError as x:
+            err(f.name, f"not well-formed XML ({x})")
+            continue
+        code = root.get("code")
+        if code != f.stem:
+            err(f.name, f"code attribute '{code}' does not match the file name")
+        for a in ("code", "type", "issue", "date"):
+            if not root.get(a):
+                err(f.name, f"missing attribute '{a}'")
+        if root.get("type") not in TYPES:
+            err(f.name, f"type must be one of {', '.join(TYPES)}")
+        if root.find("title") is None or not (root.findtext("title") or "").strip():
+            err(f.name, "missing title")
+        for el in root.iter():
+            if el.tag not in ALLOWED:
+                err(f.name, f"element <{el.tag}> is not in the profile")
+        dms[code] = root
+    for c in order:
+        if c not in dms:
+            err("publication.xml", f"lists {c}, which has no data module file")
+    for c in dms:
+        if c not in order:
+            err(c, "is not listed in publication.xml")
+    if len(set(order)) != len(order):
+        err("publication.xml", "lists a data module more than once")
+    for c, root in dms.items():
+        for r in root.iter("dmRef"):
+            if r.get("target") not in dms:
+                err(c, f"refers to missing data module {r.get('target')}")
+            if r.get("target") == c:
+                err(c, "refers to itself")
+        for g in root.iter("graphic"):
+            if not (SRC / g.get("src", "")).is_file():
+                err(c, f"graphic {g.get('src')} not found")
+            if not g.get("alt"):
+                err(c, f"graphic {g.get('src')} has no alt text")
+        ids = [e.get("id") for e in root.iter() if e.get("id")]
+        if len(ids) != len(set(ids)):
+            err(c, "has duplicate ids")
+        if root.get("type") == "fault":
+            targets = {e.get("id") for e in root.iter() if e.tag in ("isolationStep", "isolationProcedureEnd")}
+            reached = set()
+            for s in root.iter("isolationStep"):
+                for ans in ("yesAnswer", "noAnswer"):
+                    a = s.find(ans)
+                    if a is None:
+                        err(c, f"step {s.get('id')} has no <{ans}>")
+                    elif a.get("nextActionRefId") not in targets:
+                        err(c, f"step {s.get('id')} {ans} goes to unknown '{a.get('nextActionRefId')}'")
+                    else:
+                        reached.add(a.get("nextActionRefId"))
+            first = root.find(".//isolationStep")
+            for t in targets - reached - {first.get("id") if first is not None else None}:
+                err(c, f"'{t}' can never be reached")
+    return pm, groups, order, dms
+
+
+# ---------------------------------------------------------------- rendering
+
+def esc(s):
+    return html.escape(s or "", quote=True)
+
+
+class Renderer:
+    def __init__(self, dms, single):
+        self.dms, self.single = dms, single
+        self.fig = 0
+
+    def href(self, code):
+        return f"#{code}" if self.single else f"{code}.html"
+
+    def inline(self, el):
+        """Text and inline children of an element."""
+        out = [esc(el.text)]
+        for ch in el:
+            t = ch.tag
+            if t == "emphasis":
+                out.append(f"<strong>{self.inline(ch)}</strong>")
+            elif t == "ui":
+                out.append(f'<span class="ui">{self.inline(ch)}</span>')
+            elif t == "cmd":
+                out.append(f"<code>{self.inline(ch)}</code>")
+            elif t == "dmRef":
+                code = ch.get("target")
+                title = self.dms[code].findtext("title") if code in self.dms else code
+                out.append(f'<a class="dmref" href="{self.href(code)}">{esc(title)}</a> '
+                           f'<span class="dmc">({esc(code)})</span>')
+            else:
+                out.append(self.block(ch))
+            out.append(esc(ch.tail))
+        return "".join(out)
+
+    def notice(self, el, kind, label):
+        paras = "".join(f"<p>{self.inline(p)}</p>" for p in el)
+        return f'<div class="{kind}" role="note"><div class="nl">{label}</div>{paras}</div>'
+
+    def table(self, el):
+        rows = el.findall("row")
+        head = [r for r in rows if r.get("head") == "yes"]
+        body = [r for r in rows if r.get("head") != "yes"]
+        h = "".join("<tr>" + "".join(f"<th>{self.inline(c)}</th>" for c in r) + "</tr>" for r in head)
+        b = "".join("<tr>" + "".join(f"<td>{self.inline(c)}</td>" for c in r) + "</tr>" for r in body)
+        return f'<div class="tw"><table>{"<thead>" + h + "</thead>" if h else ""}<tbody>{b}</tbody></table></div>'
+
+    def block(self, el, depth=2):
+        t = el.tag
+        if t == "para":
+            return f"<p>{self.inline(el)}</p>"
+        if t == "randomList":
+            return "<ul>" + "".join(f"<li>{''.join(self.block(p) for p in li)}</li>" for li in el) + "</ul>"
+        if t == "note":
+            return self.notice(el, "note", "Note")
+        if t == "warning":
+            return self.notice(el, "warning", "Warning")
+        if t == "caution":
+            return self.notice(el, "caution", "Caution")
+        if t == "table":
+            return self.table(el)
+        if t == "figure":
+            self.fig += 1
+            g = el.find("graphic")
+            return (f'<figure><img src="{"" if self.single else "../"}{esc(g.get("src"))}" alt="{esc(g.get("alt"))}">'
+                    f'<figcaption>Figure {self.fig} {esc(el.findtext("title"))}</figcaption></figure>')
+        if t == "levelledPara":
+            h = min(depth + 1, 4)
+            inner = "".join(self.block(c, depth + 1) for c in el if c.tag != "title")
+            return f'<section><h{h}>{esc(el.findtext("title"))}</h{h}>{inner}</section>'
+        return ""
+
+    # procedures
+    def steps(self, parent, prefix=""):
+        items = []
+        for i, s in enumerate(parent.findall("proceduralStep"), 1):
+            n = f"{prefix}{i}"
+            body = "".join(self.block(c) for c in s if c.tag != "proceduralStep")
+            sub = self.steps(s, n + ".") if s.find("proceduralStep") is not None else ""
+            items.append(f'<li><span class="sn">{n}</span><div class="sb">{body}{sub}</div></li>')
+        return f'<ol class="steps">{"".join(items)}</ol>'
+
+    def procedure(self, content):
+        pr, out = content.find("preliminaryRqmts"), []
+        if pr is not None:
+            out.append("<section><h3>Preliminary requirements</h3>")
+            conds = pr.find("reqCondGroup")
+            if conds is not None:
+                out.append("<h4>Required conditions</h4><ul>" +
+                           "".join(f"<li>{self.inline(c)}</li>" for c in conds) + "</ul>")
+            if pr.find("reqTime") is not None:
+                out.append(f'<h4>Estimated time</h4><p>{self.inline(pr.find("reqTime"))}</p>')
+            if pr.find("reqSafety") is not None:
+                out.append("<h4>Safety conditions</h4>" + "".join(self.block(c) for c in pr.find("reqSafety")))
+            out.append("</section>")
+        out.append(f'<section><h3>Procedure</h3>{self.steps(content.find("mainProcedure"))}</section>')
+        cr = content.find("closeRqmts")
+        if cr is not None:
+            out.append("<section><h3>Requirements after job completion</h3><ul>" +
+                       "".join(f"<li>{self.inline(c)}</li>" for c in cr) + "</ul></section>")
+        return "".join(out)
+
+    # fault isolation
+    def fault(self, content):
+        fi = content.find("faultIsolation")
+        steps = fi.findall("isolationStep")
+        ends = fi.findall("isolationProcedureEnd")
+        label = {s.get("id"): f"Step {i}" for i, s in enumerate(steps, 1)}
+        label.update({e.get("id"): f"Result {chr(64 + i)}" for i, e in enumerate(ends, 1)})
+        anchor = lambda i: f"#{self.cur}-{i}"
+
+        def go(ans):
+            t = ans.get("nextActionRefId")
+            return f'<a href="{anchor(t)}">go to {label[t]}</a>'
+
+        out = [f'<section><h3>Fault description</h3>{"".join(self.block(c) for c in fi.find("faultDescr"))}</section>',
+               "<section><h3>Isolation procedure</h3>"]
+        for s in steps:
+            out.append(
+                f'<div class="istep" id="{self.cur}-{s.get("id")}"><div class="il">{label[s.get("id")]}</div>'
+                f'<p>{self.inline(s.find("action"))}</p>'
+                f'<p class="q">{self.inline(s.find("isolationStepQuestion"))}</p>'
+                f'<p class="ans"><span class="yes">Yes</span> {go(s.find("yesAnswer"))}'
+                f'<span class="no">No</span> {go(s.find("noAnswer"))}</p></div>')
+        out.append("</section><section><h3>Results</h3>")
+        for e in ends:
+            out.append(f'<div class="iend" id="{self.cur}-{e.get("id")}"><div class="il">{label[e.get("id")]}</div>'
+                       f'<p>{self.inline(e.find("action"))}</p></div>')
+        out.append("</section>")
+        return "".join(out)
+
+    def dm(self, code):
+        self.cur = code
+        root = self.dms[code]
+        content = root.find("content")
+        t = root.get("type")
+        if t == "proced":
+            body = self.procedure(content)
+        elif t == "fault":
+            body = self.fault(content)
+        else:
+            body = "".join(self.block(c) for c in content)
+        meta = (f'<div class="dmmeta"><span class="dmc">{esc(code)}</span>'
+                f'<span>{TYPES[t]}</span><span>Issue {esc(root.get("issue"))}</span>'
+                f'<span>{esc(root.get("date"))}</span><span>Applies to {esc(root.findtext("applic"))}</span></div>')
+        return f'<article class="dm" id="{esc(code)}">{meta}<h2>{esc(root.findtext("title"))}</h2>{body}</article>'
+
+
+# ---------------------------------------------------------------- pages
+
+def page(title, body, css, extra_head=""):
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{esc(title)}</title>
+<link rel="stylesheet" href="{css}">
+{extra_head}
+</head>
+<body>
+{body}
+</body>
+</html>
+"""
+
+
+def lodm(pm, order, dms, single):
+    href = (lambda c: f"#{c}") if single else (lambda c: f"dm/{c}.html")
+    rows = "".join(
+        f'<tr><td><a href="{href(c)}">{esc(dms[c].findtext("title"))}</a></td><td class="dmc">{esc(c)}</td>'
+        f'<td>{TYPES[dms[c].get("type")]}</td><td>{esc(dms[c].get("issue"))}</td><td>{esc(dms[c].get("date"))}</td></tr>'
+        for c in order)
+    return ('<section class="lodm"><h2>List of effective data modules</h2><div class="tw"><table><thead><tr>'
+            '<th>Title</th><th>Data module code</th><th>Type</th><th>Issue</th><th>Date</th></tr></thead>'
+            f"<tbody>{rows}</tbody></table></div></section>")
+
+
+def contents(groups, dms, single):
+    href = (lambda c: f"#{c}") if single else (lambda c: f"dm/{c}.html")
+    out = ['<nav class="toc" aria-label="Contents"><h2>Contents</h2>']
+    for title, codes in groups:
+        out.append(f"<h3>{esc(title)}</h3><ol>")
+        out += [f'<li><a href="{href(c)}">{esc(dms[c].findtext("title"))}</a></li>' for c in codes]
+        out.append("</ol>")
+    out.append("</nav>")
+    return "".join(out)
+
+
+def title_block(pm, link_pdf):
+    pdf = f'<p><a class="btn" href="{PDF_NAME}">Download the manual as PDF</a></p>' if link_pdf else ""
+    return (f'<header class="tp"><p class="pmc">{esc(pm.get("code"))} · Issue {esc(pm.get("issue"))} · {esc(pm.get("date"))}</p>'
+            f'<h1>{esc(pm.findtext("title"))}</h1><p class="lede">{esc(pm.findtext("subtitle"))}</p>'
+            f'<p>Applies to {esc(pm.findtext("applic"))}. Prepared by {esc(pm.findtext("author"))}.</p>'
+            f'<div class="warning" role="note"><div class="nl">Warning</div><p>Downlink Desk is not flight software. '
+            f'It cannot command a spacecraft and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</p></div>'
+            f"{pdf}</header>")
+
+
+def build(write=True):
+    pm, groups, order, dms = load()
+    if errors:
+        return
+    if not write:
+        return order
+    if OUT.exists():
+        shutil.rmtree(OUT)
+    (OUT / "dm").mkdir(parents=True)
+    shutil.copytree(SRC / "graphics", OUT / "graphics")
+    shutil.copy(ROOT / "tools" / "manual.css", OUT / "manual.css")
+
+    # index
+    body = (f'<main class="wrap">{title_block(pm, True)}{contents(groups, dms, False)}'
+            f'{lodm(pm, order, dms, False)}<footer><p>Source XML and build pipeline: '
+            f'<a href="https://github.com/archer7778/downlink-desk-manual">github.com/archer7778/downlink-desk-manual</a>. '
+            f'The software: <a href="https://github.com/archer7778/downlink-desk">Downlink Desk</a>.</p></footer></main>')
+    (OUT / "index.html").write_text(page(pm.findtext("title"), body, "manual.css"))
+
+    # one page per data module
+    r = Renderer(dms, single=False)
+    for i, c in enumerate(order):
+        r.fig = 0
+        prev = f'<a href="{order[i-1]}.html">← {esc(dms[order[i-1]].findtext("title"))}</a>' if i else "<span></span>"
+        nxt = f'<a href="{order[i+1]}.html">{esc(dms[order[i+1]].findtext("title"))} →</a>' if i + 1 < len(order) else "<span></span>"
+        body = (f'<main class="wrap"><p class="crumb"><a href="../index.html">{esc(pm.findtext("title"))}</a></p>'
+                f'{r.dm(c)}<nav class="pn">{prev}{nxt}</nav></main>')
+        (OUT / "dm" / f"{c}.html").write_text(page(f'{dms[c].findtext("title")} · {pm.findtext("title")}', body, "../manual.css"))
+
+    # single document for print
+    r = Renderer(dms, single=True)
+    parts = [title_block(pm, False), contents(groups, dms, True), lodm(pm, order, dms, True)]
+    for title, codes in groups:
+        parts.append(f'<h1 class="part">{esc(title)}</h1>')
+        parts += [r.dm(c) for c in codes]
+    (OUT / "manual.html").write_text(page(pm.findtext("title"), f'<main class="wrap print">{"".join(parts)}</main>', "manual.css"))
+    (OUT / ".nojekyll").write_text("")
+    return order
+
+
+if __name__ == "__main__":
+    check_only = "--check" in sys.argv
+    result = build(write=not check_only)
+    if errors:
+        print("Manual has errors:")
+        for e in errors:
+            print("  -", e)
+        sys.exit(1)
+    print(f"OK: {len(result)} data modules checked" + ("" if check_only else f", site written to {OUT.relative_to(ROOT)}/"))
