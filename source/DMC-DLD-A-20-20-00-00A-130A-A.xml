@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-20-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-20-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-04">
   <dmTitle><techName>Channel limits</techName><infoName>Set or change limits</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
@@ -10,7 +10,7 @@
         <reqCond>You have a reason for the change that another operator would accept.</reqCond>
         <reqCond>The channel is not a counter. Counters, such as restart counts, do not have limits.</reqCond>
       </reqCondGroup>
-      <reqPersons><person count="1">Operator</person><estimatedTime>About 10 minutes.</estimatedTime></reqPersons>
+      <reqPersons><person count="1">Operator</person><estimatedTime>about 10 minutes.</estimatedTime></reqPersons>
       <reqSupportEquips><supportEquipDescr>A computer or phone with a web browser, on the same network as the server</supportEquipDescr></reqSupportEquips>
       <reqSupplies><noSupplies/></reqSupplies>
       <reqSpares><noSpares/></reqSpares>

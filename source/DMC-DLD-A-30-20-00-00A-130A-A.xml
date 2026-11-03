@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-30-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-30-20-00-00A-130A-A" type="proced" issue="001" date="2026-11-04">
   <dmTitle><techName>Shift handover</techName><infoName>Hand over the console</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
@@ -9,7 +9,7 @@
         <reqCond>You are on duty, with your call sign entered.</reqCond>
         <reqCond>You know the call sign of the incoming operator.</reqCond>
       </reqCondGroup>
-      <reqPersons><person count="1">Operator</person><estimatedTime>About 10 minutes.</estimatedTime></reqPersons>
+      <reqPersons><person count="1">Operator</person><estimatedTime>about 10 minutes.</estimatedTime></reqPersons>
       <reqSupportEquips><supportEquipDescr>A computer or phone with a web browser, on the same network as the server</supportEquipDescr></reqSupportEquips>
       <reqSupplies><noSupplies/></reqSupplies>
       <reqSpares><noSpares/></reqSpares>

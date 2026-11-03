@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-00-00-00-00A-005A-A" type="descript" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-00-00-00-00A-005A-A" type="descript" issue="001" date="2026-11-04">
   <dmTitle><techName>Downlink Desk</techName><infoName>List of abbreviations</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
-    <levelledPara>
-      <title>Abbreviations</title>
-      <table>
+    <table>
         <row head="yes"><entry>Abbreviation</entry><entry>Meaning</entry></row>
         <row><entry>API</entry><entry>Application programming interface</entry></row>
         <row><entry>NOAA</entry><entry>US National Oceanic and Atmospheric Administration</entry></row>
@@ -14,6 +12,5 @@
         <row><entry>SSH</entry><entry>Secure Shell, used to log in to the server from another computer</entry></row>
         <row><entry>TLE</entry><entry>Two-line element set, the standard format for a satellite's orbit</entry></row>
       </table>
-    </levelledPara>
   </content>
 </dmodule>

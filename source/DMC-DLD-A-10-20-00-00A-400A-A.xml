@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-10-20-00-00A-400A-A" type="fault" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-10-20-00-00A-400A-A" type="fault" issue="001" date="2026-11-04">
   <dmTitle><techName>Telemetry reception</techName><infoName>Fault isolation: no frames, or satellite may have gone silent</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>

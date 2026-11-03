@@ -33,7 +33,7 @@ def title_of(root):
 # Every element the profile allows. Anything else is a build error, so typos can't slip through.
 ALLOWED = {
     "dmodule", "dmTitle", "techName", "infoName", "status", "title", "applic", "content", "levelledPara", "para", "randomList", "listItem",
-    "emphasis", "ui", "cmd", "note", "notePara", "warning", "caution", "warningAndCautionPara",
+    "emphasis", "ui", "cmd", "note", "notePara", "caution", "warningAndCautionPara",
     "table", "row", "entry", "figure", "graphic", "dmRef", "preliminaryRqmts", "reqCondGroup",
     "reqCond", "reqPersons", "person", "estimatedTime", "reqSupportEquips", "supportEquipDescr",
     "noSupportEquips", "reqSupplies", "noSupplies", "reqSpares", "noSpares", "reqSafety", "noSafety",
@@ -306,7 +306,7 @@ class Renderer:
 
 # ---------------------------------------------------------------- pages
 
-def page(title, body, css, extra_head=""):
+def page(title, body, css):
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -314,7 +314,6 @@ def page(title, body, css, extra_head=""):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <link rel="stylesheet" href="{css}">
-{extra_head}
 </head>
 <body>
 {body}
@@ -323,7 +322,7 @@ def page(title, body, css, extra_head=""):
 """
 
 
-def lodm(pm, order, dms, single):
+def lodm(order, dms, single):
     href = (lambda c: f"#{c}") if single else (lambda c: f"dm/{c}.html")
     rows = "".join(
         f'<tr><td><a href="{href(c)}">{esc(title_of(dms[c]))}</a></td><td class="dmc">{esc(c)}</td>'
@@ -370,7 +369,7 @@ def build(write=True):
 
     # index
     body = (f'<main class="wrap">{title_block(pm, True)}{contents(groups, dms, False)}'
-            f'{lodm(pm, order, dms, False)}<footer><p>Source XML and build pipeline: '
+            f'{lodm(order, dms, False)}<footer><p>Source XML and build pipeline: '
             f'<a href="https://github.com/archer7778/downlink-desk-manual">github.com/archer7778/downlink-desk-manual</a>. '
             f'The software: <a href="https://github.com/archer7778/downlink-desk">Downlink Desk</a>.</p></footer></main>')
     (OUT / "index.html").write_text(page(pm.findtext("title"), body, "manual.css"))
@@ -387,12 +386,11 @@ def build(write=True):
 
     # single document for print
     r = Renderer(dms, single=True)
-    parts = [title_block(pm, False), contents(groups, dms, True), lodm(pm, order, dms, True)]
+    parts = [title_block(pm, False), contents(groups, dms, True), lodm(order, dms, True)]
     for title, codes in groups:
         parts.append(f'<h1 class="part">{esc(title)}</h1>')
         parts += [r.dm(c) for c in codes]
     (OUT / "manual.html").write_text(page(pm.findtext("title"), f'<main class="wrap print">{"".join(parts)}</main>', "manual.css"))
-    (OUT / ".nojekyll").write_text("")
     return order
 
 

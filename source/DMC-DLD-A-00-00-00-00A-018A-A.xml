@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-00-00-00-00A-018A-A" type="descript" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-00-00-00-00A-018A-A" type="descript" issue="001" date="2026-11-04">
   <dmTitle><techName>Downlink Desk</techName><infoName>Introduction</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
@@ -67,12 +67,6 @@
         <listItem><para>The console also uses <ui>Caution</ui> and <ui>Alarm</ui> as the names of its two alert severities. These are shown as screen text, and are not safety statements.</para></listItem>
         <listItem><para>Each data module shows its quality assurance status. <emphasis>Unverified</emphasis> means the procedure has been checked against the Downlink Desk source code but has not yet been carried out on a running console.</para></listItem>
       </randomList>
-    </levelledPara>
-    <levelledPara>
-      <title>Status of the system</title>
-      <caution>
-        <warningAndCautionPara>Downlink Desk is not flight software. It cannot command a spacecraft, it is not affiliated with any satellite team, and its limits are provisional. Do not use it to make decisions about real spacecraft hardware.</warningAndCautionPara>
-      </caution>
     </levelledPara>
   </content>
 </dmodule>

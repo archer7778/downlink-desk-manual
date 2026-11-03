@@ -5,17 +5,15 @@
   --rule: #d9dde1;
   --accent: #1f5f8b;
   --panel: #f4f6f8;
-  --warn: #b3261e;
-  --warn-bg: #fdecea;
   --caut: #8a5a00;
   --caut-bg: #fff4dc;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not(.print-mode) {
+  :root {
     --bg: #15171a; --text: #e8eaed; --muted: #a2a9b1; --rule: #33383e; --accent: #7db4dc;
-    --panel: #1e2125; --warn: #f28b82; --warn-bg: #3a1714; --caut: #f2c063; --caut-bg: #33270f;
+    --panel: #1e2125; --caut: #f2c063; --caut-bg: #33270f;
   }
 }
 * { box-sizing: border-box; }
@@ -46,14 +44,12 @@ th { background: var(--panel); }
 .lodm td:last-child, .lodm th:last-child { white-space: nowrap; }
 .dmmeta { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-size: 0.8rem; color: var(--muted); border-top: 3px solid var(--accent); padding-top: 0.5rem; }
 .dm > h2 { margin-top: 0.4rem; }
-.warning, .caution, .note { border-radius: 6px; padding: 0.7rem 0.9rem; margin: 0.9rem 0; }
-.warning { background: var(--warn-bg); border: 2px solid var(--warn); }
+.caution, .note { border-radius: 6px; padding: 0.7rem 0.9rem; margin: 0.9rem 0; }
 .caution { background: var(--caut-bg); border: 2px solid var(--caut); }
 .note { background: var(--panel); border-left: 4px solid var(--muted); }
 .nl { font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; margin-bottom: 0.25rem; }
-.warning .nl { color: var(--warn); text-align: center; }
 .caution .nl { color: var(--caut); text-align: center; }
-.warning p:last-child, .caution p:last-child, .note p:last-child { margin-bottom: 0; }
+.caution p:last-child, .note p:last-child { margin-bottom: 0; }
 ol.steps { list-style: none; padding: 0; }
 ol.steps > li { display: flex; gap: 0.7rem; margin-bottom: 0.7rem; }
 ol.steps ol.steps { margin-top: 0.5rem; }
@@ -84,7 +80,7 @@ footer { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
   .dm { break-before: page; }
   .part + .dm { break-before: avoid; }
   .lodm, .toc { break-before: page; }
-  .istep, .iend, .warning, .caution, .note, figure, tr { break-inside: avoid; }
+  .istep, .iend, .caution, .note, figure, tr { break-inside: avoid; }
   h2, h3, h4 { break-after: avoid; }
 }
 @page { size: A4; margin: 18mm 16mm; }

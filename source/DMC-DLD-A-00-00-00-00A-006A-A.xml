@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmodule code="DMC-DLD-A-00-00-00-00A-006A-A" type="descript" issue="001" date="2026-11-03">
+<dmodule code="DMC-DLD-A-00-00-00-00A-006A-A" type="descript" issue="001" date="2026-11-04">
   <dmTitle><techName>Downlink Desk</techName><infoName>List of terms</infoName></dmTitle>
   <status security="Unclassified" rpc="Archie Maclean" originator="Archie Maclean" qa="unverified"/>
   <applic>Downlink Desk 0.17.x</applic>
   <content>
-    <levelledPara>
-      <title>Terms</title>
-      <table>
+    <table>
         <row head="yes"><entry>Term</entry><entry>Meaning in this manual</entry></row>
         <row><entry>Acknowledge</entry><entry>Record that an operator has seen an alert. The alert stays in the list until its condition clears.</entry></row>
         <row><entry>Alarm</entry><entry>The higher alert severity. A value is outside its alarm limits, or a condition needs attention now.</entry></row>
@@ -23,6 +21,5 @@
         <row><entry>Shelve</entry><entry>Hide an alert for a set time, with a reason. Shelving is signed in the audit trail.</entry></row>
         <row><entry>Stale</entry><entry>No new decoded frames for longer than the stale period, 12 hours by default.</entry></row>
       </table>
-    </levelledPara>
   </content>
 </dmodule>
